@@ -1,0 +1,118 @@
+<!--
+  Dashboard de Ads do Grupo Asun (Asun + Leve Mais), 100% estático: GitHub Pages
+  + dados publicados em data/<brand>.json pelo GitHub Action do repo
+  asun-dashboard-sync (roda 1x/dia). Sem backend, sem login nesta fase — ver
+  README.md ("Fase 2") para o plano de senha + criptografia client-side.
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Grupo Asun · Dashboard</title>
+<link rel="stylesheet" href="styles.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- ── App ── -->
+<div id="appShell">
+
+  <!-- ── Header ── -->
+  <div id="header">
+    <div class="header-inner">
+      <div class="header-top">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="logo">Grupo Asun<span> · Ads</span></span>
+          <span class="header-sep">|</span>
+          <span id="headerPeriod" class="header-period">—</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span id="lastSync" class="header-period"></span>
+        </div>
+      </div>
+      <div class="tabs" id="tabBar"></div>
+    </div>
+  </div>
+
+  <!-- ── Filter Bar ── -->
+  <div id="filterBar">
+    <div class="filter-inner">
+      <div class="filter-row">
+        <div class="filter-group">
+          <span class="filter-label">Marca</span>
+          <select class="filter-select" id="brandSelect" onchange="onBrandChange()">
+            <option value="asun">Asun</option>
+            <option value="leve_mais">Leve Mais</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Período Rápido</span>
+          <select class="filter-select" id="quickPeriod" onchange="onQuickChange()">
+            <option value="hoje">Hoje</option>
+            <option value="ontem">Ontem</option>
+            <option value="7d">Últimos 7 dias</option>
+            <option value="14d">Últimos 14 dias</option>
+            <option value="30d" selected>Últimos 30 dias</option>
+            <option value="mes">Este mês</option>
+            <option value="mesant">Mês passado</option>
+            <option value="custom">Personalizado</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Data Inicial</span>
+          <input class="filter-date" type="date" id="startDate" onchange="onDateManual()"/>
+        </div>
+        <div class="filter-sep">—</div>
+        <div class="filter-group">
+          <span class="filter-label">Data Final</span>
+          <input class="filter-date" type="date" id="endDate" onchange="onDateManual()"/>
+        </div>
+        <button class="filter-btn" onclick="applyFilter()">Atualizar Painel</button>
+      </div>
+      <div class="filter-cmp-row">
+        <label class="filter-check">
+          <input type="checkbox" id="cmpCheck" onchange="toggleCmp()"/>
+          Comparar com
+        </label>
+        <div class="cmp-fields" id="cmpFields">
+          <select class="filter-select" id="cmpMode" style="height:30px;font-size:12px;padding:4px 8px" onchange="calcCmpDates()">
+            <option value="anterior">Período anterior</option>
+            <option value="mesant">Mês passado</option>
+            <option value="anoant">Ano anterior</option>
+            <option value="custom">Personalizado</option>
+          </select>
+          <input class="cmp-date" type="date" id="cmpStart" readonly/>
+          <span class="cmp-sep">—</span>
+          <input class="cmp-date" type="date" id="cmpEnd" readonly/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Alert bar (ex: sync com erro) ── -->
+  <div id="tokenAlert">
+    <div class="token-alert-inner">
+      <span class="token-alert-text" id="tokenAlertText"></span>
+      <button class="token-alert-close" onclick="document.getElementById('tokenAlert').style.display='none'">✕</button>
+    </div>
+  </div>
+
+  <!-- ── Content ── -->
+  <div id="content">
+    <div class="loading"><div class="spinner"></div>Iniciando…</div>
+  </div>
+
+  <footer>Grupo Asun · Dashboard de Ads · Dados via GitHub Actions + GitHub Pages</footer>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/aggregate.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/tabs/diario.js"></script>
+<script src="js/tabs/google.js"></script>
+<script src="js/tabs/meta.js"></script>
+<script src="js/tabs/organico.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
