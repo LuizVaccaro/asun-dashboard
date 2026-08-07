@@ -208,15 +208,5 @@ tr:hover td{background:var(--bg)}
 /* ── Footer ── */
 footer{text-align:center;padding:24px;font-size:11px;color:var(--muted-dark);border-top:1px solid var(--border);margin-top:40px}
 
-/* ── Login ── */
-#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-.login-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:32px;width:100%;max-width:340px;box-shadow:0 4px 24px rgba(0,0,0,.06)}
-.login-title{font-weight:800;font-size:20px;color:var(--brand);margin-bottom:4px}
-.login-sub{font-size:12px;color:var(--muted-dark);margin-bottom:20px}
-.login-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--ink);border-radius:6px;padding:10px 12px;font-size:14px;outline:none;margin-bottom:12px}
-.login-input:focus{border-color:var(--brand)}
-.login-btn{width:100%;background:var(--brand);color:#fff;border:none;border-radius:6px;padding:10px;font-size:14px;font-weight:600;cursor:pointer}
-.login-btn:hover{background:var(--brand-dark)}
-.login-btn:disabled{opacity:.6;cursor:default}
-.login-error{font-size:12px;color:var(--c-red);margin-top:10px;min-height:16px}
-#appShell{display:none}
+/* Sem tela de login nesta fase — #appShell fica visível por padrão (no dashboard
+   original, o JS setava display:block depois do login; aqui não há login). */
