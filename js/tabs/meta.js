@@ -62,11 +62,12 @@ function renderMetaCampanhas(filterCamp, filterFunnel) {
 
   const byCamp = {};
   for (const r of rows) {
-    if (!byCamp[r.campaign_name]) byCamp[r.campaign_name] = { campaign_name: r.campaign_name, funnel_stage: r.funnel_stage, spend: 0, clicks: 0, conversions: 0, conversion_value: 0 };
-    byCamp[r.campaign_name].spend            += Number(r.spend);
-    byCamp[r.campaign_name].clicks           += Number(r.clicks);
-    byCamp[r.campaign_name].conversions      += Number(r.conversions);
-    byCamp[r.campaign_name].conversion_value += Number(r.conversion_value);
+    if (!byCamp[r.campaign_name]) byCamp[r.campaign_name] = { campaign_name: r.campaign_name, funnel_stage: r.funnel_stage, spend: 0, clicks: 0, conversions: 0, conversion_value: 0, sales_conversions: 0 };
+    byCamp[r.campaign_name].spend             += Number(r.spend);
+    byCamp[r.campaign_name].clicks            += Number(r.clicks);
+    byCamp[r.campaign_name].conversions       += Number(r.conversions);
+    byCamp[r.campaign_name].conversion_value  += Number(r.conversion_value);
+    byCamp[r.campaign_name].sales_conversions += Number(r.sales_conversions);
   }
   const campRows = Object.values(byCamp).map(r => ({
     ...r,
@@ -79,8 +80,10 @@ function renderMetaCampanhas(filterCamp, filterFunnel) {
 
   const totSpend = sum(campRows, 'spend'), totClicks = sum(campRows, 'clicks'), totConv = sum(campRows, 'conversions');
   const totConvValue = sum(campRows, 'conversion_value');
-  // Ticket médio usa só as conversões das campanhas "venda(s)" no nome (mesma lógica do google.js).
-  const totSalesConv = sum(campRows.filter(r => /venda/i.test(r.campaign_name)), 'conversions');
+  // Ticket médio usa só as conversões de venda (sales_conversions, já gated em aggregate.js —
+  // vem de is_purchase_goal por anúncio, não de funnel_stage; mesma ideia do google.js, sinal
+  // diferente porque o Meta tem precisão por conjunto de anúncios).
+  const totSalesConv = sum(campRows, 'sales_conversions');
   const totCAC = totConv > 0 ? totSpend / totConv : null;
   const totTicket = totSalesConv > 0 ? totConvValue / totSalesConv : null;
   const totROAS = totSpend > 0 ? totConvValue / totSpend : null;

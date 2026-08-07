@@ -6,10 +6,26 @@
 // shape que a aba (js/tabs/*.js) já esperava do fetch original, então os tabs em
 // si mudam o mínimo possível.
 
-// mesmo gate `name ILIKE '%venda%'` usado pelo SQL original: Valor de Vendas/Ticket/ROAS
-// só contam campanhas com "venda"/"vendas" no nome — funnel_stage='vendas' é mais amplo
-// (inclui Leads/Whatsapp) e não tem valor de compra real associado.
-const isSalesCampaign = name => /venda/i.test(name || '');
+// Valor de Vendas/Ticket/CAC Vendas só contam conversões de compra de verdade — o sinal muda
+// por plataforma porque a precisão disponível é diferente:
+//
+// Meta: cada linha já carrega `is_purchase_goal` (calculado no sync a partir da meta de
+// otimização do conjunto de anúncios daquele anúncio) — é o sinal mais preciso que existe,
+// não depende de nome de campanha. Um "Leads | Clube asun | CBO" tem funnel_stage='vendas'
+// (pega intenção de conversão) mas is_purchase_goal=false — não é venda de verdade, não pode
+// entrar aqui (testado: usar funnel_stage pro Meta inflava o número de "vendas" com leads).
+//
+// Google: a API só devolve `conversions_value` agregado por campanha, sem separar por tipo de
+// evento — não tem um sinal por-ad-set como o Meta. A melhor aproximação disponível é
+// funnel_stage='vendas' (classificado a partir do nome da campanha em
+// asun-dashboard-sync/scripts/lib/funnel.mjs). Antes disso, o gate exigia literalmente a
+// palavra "venda" no nome (`ILIKE '%venda%'`, mesmo padrão do dashboard original) — funcionava
+// pra Asun, mas a Leve Mais nomeia campanha de vendas diferente (ex: "[Rede de Pesquisa -
+// Marca]", "[S] Categorias - LM Gravataí"), então o valor de conversão real dessas campanhas
+// ficava zerado. funnel_stage resolve isso (default 'vendas' quando o nome não bate com nenhum
+// padrão de topo/alcance/institucional).
+const isMetaSalesRow = row => !!row.is_purchase_goal;
+const isGoogleSalesRow = row => row.funnel_stage === 'vendas';
 
 function inRange(dateStr, start, end) {
   if (!dateStr) return false;
@@ -28,8 +44,8 @@ function buildDailyPerformance(data, start, end) {
       spend: r.spend,
       clicks: r.clicks,
       conversions: r.conversions,
-      conversion_value: isSalesCampaign(r.campaign_name) ? r.conversion_value : 0,
-      sales_conversions: isSalesCampaign(r.campaign_name) ? r.conversions : 0,
+      conversion_value: isMetaSalesRow(r) ? r.conversion_value : 0,
+      sales_conversions: isMetaSalesRow(r) ? r.conversions : 0,
     }));
   const googleRows = data.google_ads
     .filter(r => inRange(r.date, start, end))
@@ -40,8 +56,8 @@ function buildDailyPerformance(data, start, end) {
       spend: r.spend,
       clicks: r.clicks,
       conversions: r.conversions,
-      conversion_value: isSalesCampaign(r.campaign_name) ? r.conversion_value : 0,
-      sales_conversions: isSalesCampaign(r.campaign_name) ? r.conversions : 0,
+      conversion_value: isGoogleSalesRow(r) ? r.conversion_value : 0,
+      sales_conversions: isGoogleSalesRow(r) ? r.conversions : 0,
     }));
   return { rows: [...metaRows, ...googleRows] };
 }
@@ -79,7 +95,8 @@ function buildMetaCampaigns(data, start, end) {
       spend: r.spend,
       clicks: r.clicks,
       conversions: r.conversions,
-      conversion_value: isSalesCampaign(r.campaign_name) ? r.conversion_value : 0,
+      conversion_value: isMetaSalesRow(r) ? r.conversion_value : 0,
+      sales_conversions: isMetaSalesRow(r) ? r.conversions : 0,
     }));
   return { rows };
 }
@@ -95,7 +112,8 @@ function buildGoogleCampaigns(data, start, end) {
       spend: r.spend,
       clicks: r.clicks,
       conversions: r.conversions,
-      conversion_value: isSalesCampaign(r.campaign_name) ? r.conversion_value : 0,
+      conversion_value: isGoogleSalesRow(r) ? r.conversion_value : 0,
+      sales_conversions: isGoogleSalesRow(r) ? r.conversions : 0,
     }));
   return { rows };
 }
