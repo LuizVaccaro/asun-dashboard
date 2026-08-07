@@ -49,6 +49,11 @@ function buildDiarioRows(rows) {
   return Object.values(byDate).map(r => ({
     ...r,
     cac: r.conversions > 0 ? r.spend / r.conversions : null,
+    // CAC de Vendas: só conta a conversão de venda (purchase) real, não todo evento (lead/whatsapp
+    // misturado junto). É o número que bate quando se olha por plataforma/campanha — no agregado
+    // geral, o CAC "de todas as conversões" fica artificialmente baixo por causa desses outros
+    // eventos com custo por ação muito menor.
+    cac_vendas: r.sales_conversions > 0 ? r.spend / r.sales_conversions : null,
     roas: r.spend > 0 ? r.conversion_value / r.spend : null,
   }));
 }
@@ -64,7 +69,9 @@ function renderDiarioBody(filterChannel, filterFunnel) {
   const totSpend = sum(rows, 'spend'), totClicks = sum(rows, 'clicks'), totConv = sum(rows, 'conversions');
   const totConvValue = sum(rows, 'conversion_value');
   const totSalesConv = sum(rows, 'sales_conversions');
-  const totCAC = totConv > 0 ? totSpend / totConv : null;
+  // CAC Médio do card usa só conversões de venda (purchase), não o total de conversões —
+  // mistura de lead/whatsapp/purchase no agregado geral distorcia o número pra baixo.
+  const totCAC = totSalesConv > 0 ? totSpend / totSalesConv : null;
   const totTicket = totSalesConv > 0 ? totConvValue / totSalesConv : null;
   const totROAS = totSpend > 0 ? totConvValue / totSpend : null;
 
@@ -124,6 +131,8 @@ function renderDiarioBody(filterChannel, filterFunnel) {
           ${sortTh('diario', 'Cliques', 'clicks')}
           ${sortTh('diario', 'Conversões', 'conversions')}
           ${sortTh('diario', 'CAC', 'cac')}
+          ${sortTh('diario', 'Vendas', 'sales_conversions')}
+          ${sortTh('diario', 'CAC Vendas', 'cac_vendas')}
           ${sortTh('diario', 'Valor Vendas', 'conversion_value')}
           ${sortTh('diario', 'ROAS', 'roas')}
         </tr></thead>
@@ -134,9 +143,11 @@ function renderDiarioBody(filterChannel, filterFunnel) {
             <td class="r">${fN(r.clicks)}</td>
             <td class="r">${fN(r.conversions)}</td>
             <td class="r">${r.cac != null ? fR(r.cac) : '—'}</td>
+            <td class="r">${fN(r.sales_conversions)}</td>
+            <td class="r">${r.cac_vendas != null ? fR(r.cac_vendas) : '—'}</td>
             <td class="r">${fR(r.conversion_value)}</td>
             <td class="r">${r.roas != null ? fX(r.roas) : '—'}</td>
-          </tr>`).join('') : emptyRow(7)}</tbody>
+          </tr>`).join('') : emptyRow(9)}</tbody>
       </table></div>
     </div>
   `;
@@ -147,7 +158,7 @@ function renderDiarioBody(filterChannel, filterFunnel) {
       [{ label: 'Investimento', data: chrono.map(r => r.spend), backgroundColor: '#2563eb' }],
       [
         { label: 'Conversões', data: chrono.map(r => r.conversions), borderColor: '#16a34a', yAxisID: 'y1' },
-        { label: 'CAC', data: chrono.map(r => r.cac), borderColor: '#e0435a', yAxisID: 'y', borderDash: [5, 3] },
+        { label: 'CAC Vendas', data: chrono.map(r => r.cac_vendas), borderColor: '#e0435a', yAxisID: 'y', borderDash: [5, 3] },
       ]);
   }
 }
