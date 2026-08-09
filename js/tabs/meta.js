@@ -197,6 +197,12 @@ function renderMetaCriativos() {
 }
 
 function metaCreativeRow(r) {
+  // CAC usa todas as conversões (mesmo critério da aba Campanhas); Valor de Vendas/Ticket/ROAS só
+  // contam conversões de compra de verdade (sales_conversions, gated por is_purchase_goal em
+  // aggregate.js) — um criativo de Leads mostra CAC normal mas Vendas/Ticket/ROAS ficam em "—".
+  const cac = r.conversions > 0 ? r.spend / r.conversions : null;
+  const roas = r.spend > 0 && r.conversion_value > 0 ? r.conversion_value / r.spend : null;
+  const ticket = r.sales_conversions > 0 ? r.conversion_value / r.sales_conversions : null;
   return `
     <div class="top-row">
       ${previewThumb(r.creative_name, r.thumbnail_url, r.permalink_url, 56)}
@@ -209,6 +215,10 @@ function metaCreativeRow(r) {
         <div class="metric"><span class="metric-label">Alcance</span><span class="metric-value">${fN(r.reach)}</span></div>
         <div class="metric"><span class="metric-label">Cliques</span><span class="metric-value">${fN(r.clicks)}</span></div>
         <div class="metric"><span class="metric-label">Conversões</span><span class="metric-value c-brand">${fN(r.conversions)}</span></div>
+        <div class="metric"><span class="metric-label">CAC</span><span class="metric-value">${cac != null ? fR(cac) : '—'}</span></div>
+        <div class="metric"><span class="metric-label">Valor Vendas</span><span class="metric-value">${r.conversion_value > 0 ? fR(r.conversion_value) : '—'}</span></div>
+        <div class="metric"><span class="metric-label">Ticket Médio</span><span class="metric-value">${ticket != null ? fR(ticket) : '—'}</span></div>
+        <div class="metric"><span class="metric-label">ROAS</span><span class="metric-value c-brand">${roas != null ? fX(roas) : '—'}</span></div>
       </div>
     </div>`;
 }

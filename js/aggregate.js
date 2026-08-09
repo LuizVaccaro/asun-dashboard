@@ -132,13 +132,18 @@ function buildMetaCreatives(data, start, end) {
         creative_format: r.creative_format ?? null,
         thumbnail_url: r.thumbnail_url ?? null,
         permalink_url: r.permalink_url ?? null,
-        spend: 0, clicks: 0, conversions: 0, reach: 0,
+        spend: 0, clicks: 0, conversions: 0, reach: 0, conversion_value: 0, sales_conversions: 0,
       };
     }
     byAd[r.ad_id].spend += Number(r.spend) || 0;
     byAd[r.ad_id].clicks += Number(r.clicks) || 0;
     byAd[r.ad_id].conversions += Number(r.conversions) || 0;
     byAd[r.ad_id].reach += Number(r.reach) || 0; // mesmo SUM(reach) do endpoint original — não deduplica pessoas entre dias
+    // Mesmo gate is_purchase_goal do meta-campaigns/daily-performance (ver comentário no topo do
+    // arquivo) — só conta como venda de verdade quando o conjunto de anúncios daquele ad tem meta
+    // de otimização de compra.
+    byAd[r.ad_id].conversion_value  += isMetaSalesRow(r) ? Number(r.conversion_value) || 0 : 0;
+    byAd[r.ad_id].sales_conversions += isMetaSalesRow(r) ? Number(r.conversions) || 0 : 0;
   }
   return { rows: Object.values(byAd) };
 }
