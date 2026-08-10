@@ -1,8 +1,9 @@
 <!--
   Dashboard de Ads do Grupo Asun (Asun + Leve Mais), 100% estático: GitHub Pages
   + dados publicados em data/<brand>.json pelo GitHub Action do repo
-  asun-dashboard-sync (roda 1x/dia). Sem backend, sem login nesta fase — ver
-  README.md ("Fase 2") para o plano de senha + criptografia client-side.
+  asun-dashboard-sync (roda 1x/dia). Sem backend — senha compartilhada +
+  criptografia client-side (Fase 2, ver js/crypto.js/js/app.js): o JSON chega
+  cifrado (AES-256-GCM), decifrado no navegador com a chave derivada da senha.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -10,10 +11,21 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Grupo Asun · Dashboard</title>
-<link rel="stylesheet" href="styles.css?v=4"/>
+<link rel="stylesheet" href="styles.css?v=5"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+
+<!-- ── Fase 2: tela de senha ── -->
+<div id="pwGate" class="pw-gate">
+  <div class="pw-gate-box">
+    <div class="pw-gate-logo">Grupo Asun <span>· Ads</span></div>
+    <div class="pw-gate-title">Acesso restrito</div>
+    <input type="password" id="pwInput" class="pw-gate-input" placeholder="Senha" autocomplete="current-password"/>
+    <button class="pw-gate-btn" id="pwSubmitBtn" onclick="submitPassword()">Entrar</button>
+    <div class="pw-gate-error" id="pwError"></div>
+  </div>
+</div>
 
 <!-- ── App ── -->
 <div id="appShell">
@@ -106,13 +118,14 @@
   <footer>Grupo Asun · Dashboard de Ads · Dados via GitHub Actions + GitHub Pages</footer>
 </div>
 
-<script src="js/data.js?v=4"></script>
-<script src="js/aggregate.js?v=4"></script>
-<script src="js/utils.js?v=4"></script>
-<script src="js/tabs/diario.js?v=4"></script>
-<script src="js/tabs/google.js?v=4"></script>
-<script src="js/tabs/meta.js?v=4"></script>
-<script src="js/tabs/organico.js?v=4"></script>
-<script src="js/app.js?v=4"></script>
+<script src="js/crypto.js?v=5"></script>
+<script src="js/data.js?v=5"></script>
+<script src="js/aggregate.js?v=5"></script>
+<script src="js/utils.js?v=5"></script>
+<script src="js/tabs/diario.js?v=5"></script>
+<script src="js/tabs/google.js?v=5"></script>
+<script src="js/tabs/meta.js?v=5"></script>
+<script src="js/tabs/organico.js?v=5"></script>
+<script src="js/app.js?v=5"></script>
 </body>
 </html>

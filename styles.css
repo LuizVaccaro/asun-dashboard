@@ -208,5 +208,20 @@ tr:hover td{background:var(--bg)}
 /* ── Footer ── */
 footer{text-align:center;padding:24px;font-size:11px;color:var(--muted-dark);border-top:1px solid var(--border);margin-top:40px}
 
-/* Sem tela de login nesta fase — #appShell fica visível por padrão (no dashboard
-   original, o JS setava display:block depois do login; aqui não há login). */
+/* ── Fase 2: tela de senha ── #appShell some até o app.js liberar (classe .show) depois de
+   decifrar os dados com sucesso; ver boot()/unlockDashboard() em js/app.js. */
+#appShell{display:none}
+#appShell.show{display:block}
+
+.pw-gate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:var(--bg)}
+.pw-gate.hide{display:none}
+.pw-gate-box{width:100%;max-width:320px;padding:32px 28px;background:var(--white);border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 24px rgba(22,24,29,.08);text-align:center}
+.pw-gate-logo{font-size:17px;font-weight:800;color:var(--brand-darker);letter-spacing:-.02em}
+.pw-gate-logo span{font-weight:500;color:var(--muted-dark)}
+.pw-gate-title{font-size:13px;color:var(--muted-dark);margin-top:6px;margin-bottom:20px}
+.pw-gate-input{width:100%;padding:10px 12px;border:1px solid var(--border-strong);border-radius:8px;font-size:14px;font-family:inherit;outline:none}
+.pw-gate-input:focus{border-color:var(--brand)}
+.pw-gate-btn{width:100%;margin-top:12px;padding:10px 12px;border:none;border-radius:8px;background:var(--brand);color:#fff;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
+.pw-gate-btn:hover{background:var(--brand-dark)}
+.pw-gate-btn:disabled{opacity:.6;cursor:default}
+.pw-gate-error{min-height:18px;margin-top:10px;font-size:12px;color:var(--c-red);font-weight:600}
