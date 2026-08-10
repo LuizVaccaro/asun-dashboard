@@ -62,24 +62,41 @@ function buildDailyPerformance(data, start, end) {
   return { rows: [...metaRows, ...googleRows] };
 }
 
-// ── kpis-overview ── totais do período + opcional comparação (sem conversion_value:
-// o dashboard original também não devolvia esse campo aqui) ──
+// ── kpis-overview ── totais do período + opcional comparação. Reaproveita buildDailyPerformance
+// (mesmo gate de venda usado em todo o resto do dashboard) pra que a comparação cubra TODOS os
+// cards do Desempenho Diário (Meta/Google/CAC/Valor de Vendas/Ticket/ROAS), não só Investimento e
+// Conversões — antes os outros cards ficavam sempre "Sem comp." mesmo com "Comparar com" marcado.
 function buildKpisOverview(data, start, end, cmpStart, cmpEnd) {
-  const rowsInRange = (s, e) => [
-    ...data.meta_ads.filter(r => inRange(r.date, s, e)),
-    ...data.google_ads.filter(r => inRange(r.date, s, e)),
-  ];
-  const totalsOf = rows => ({
-    spend: sum(rows, 'spend'),
-    clicks: sum(rows, 'clicks'),
-    conversions: sum(rows, 'conversions'),
-  });
+  const rowsInRange = (s, e) => buildDailyPerformance(data, s, e).rows;
+  const totalsOf = rows => {
+    const spend = sum(rows, 'spend');
+    const conversionValue = sum(rows, 'conversion_value');
+    const salesConversions = sum(rows, 'sales_conversions');
+    return {
+      spend,
+      clicks: sum(rows, 'clicks'),
+      conversions: sum(rows, 'conversions'),
+      conversionValue,
+      salesConversions,
+      metaSpend: sum(rows.filter(r => r.platform === 'Meta Ads'), 'spend'),
+      googleSpend: sum(rows.filter(r => r.platform === 'Google Ads'), 'spend'),
+      cac: salesConversions > 0 ? spend / salesConversions : null,
+      ticket: salesConversions > 0 ? conversionValue / salesConversions : null,
+      roas: spend > 0 ? conversionValue / spend : null,
+    };
+  };
 
   const totals = totalsOf(rowsInRange(start, end));
   if (cmpStart && cmpEnd) {
     const cmpTotals = totalsOf(rowsInRange(cmpStart, cmpEnd));
     totals.cmpSpend = cmpTotals.spend;
     totals.cmpConversions = cmpTotals.conversions;
+    totals.cmpMetaSpend = cmpTotals.metaSpend;
+    totals.cmpGoogleSpend = cmpTotals.googleSpend;
+    totals.cmpCAC = cmpTotals.cac;
+    totals.cmpConversionValue = cmpTotals.conversionValue;
+    totals.cmpTicket = cmpTotals.ticket;
+    totals.cmpROAS = cmpTotals.roas;
   }
   return { totals };
 }

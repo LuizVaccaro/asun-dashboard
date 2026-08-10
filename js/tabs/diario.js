@@ -104,15 +104,15 @@ function renderDiarioBody(filterChannel, filterFunnel) {
 
     <div class="kpi-grid cols-4" style="margin-bottom:12px">
       ${kpiCard('Investimento Total', totSpend, _diarioTotals.totals?.cmpSpend, fR, 'c-brand')}
-      ${kpiCard('Meta Ads', metaSpend, undefined, fR, 'c-orange')}
-      ${kpiCard('Google Ads', googleSpend, undefined, fR, 'c-blue')}
+      ${kpiCard('Meta Ads', metaSpend, _diarioTotals.totals?.cmpMetaSpend, fR, 'c-orange')}
+      ${kpiCard('Google Ads', googleSpend, _diarioTotals.totals?.cmpGoogleSpend, fR, 'c-blue')}
       ${kpiCard('Conversões', totConv, _diarioTotals.totals?.cmpConversions, fN, 'c-green')}
     </div>
     <div class="kpi-grid cols-4" style="margin-bottom:20px">
-      ${kpiCard('CAC Médio', totCAC, undefined, fR, 'c-brand', true)}
-      ${kpiCard('Valor de Vendas', totConvValue, undefined, fR, 'c-green')}
-      ${kpiCard('Ticket Médio', totTicket, undefined, fR, 'c-blue')}
-      ${kpiCard('ROAS', totROAS, undefined, fX, 'c-brand')}
+      ${kpiCard('CAC Médio', totCAC, _diarioTotals.totals?.cmpCAC, fR, 'c-brand', true)}
+      ${kpiCard('Valor de Vendas', totConvValue, _diarioTotals.totals?.cmpConversionValue, fR, 'c-green')}
+      ${kpiCard('Ticket Médio', totTicket, _diarioTotals.totals?.cmpTicket, fR, 'c-blue')}
+      ${kpiCard('ROAS', totROAS, _diarioTotals.totals?.cmpROAS, fX, 'c-brand')}
     </div>
 
     <div class="card" style="margin-bottom:16px">
