@@ -56,9 +56,24 @@ const sum = (arr, k) => arr.reduce((s,r)=>s+(+r[k]||0), 0);
 function escHtml(s) {
   return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+// Usado pra montar onclick="fn('...')" inline, onde o HTML ao redor usa aspas DUPLAS.
+// Dois contextos de escape empilhados: 1) dentro da string JS literal de aspas simples
+// (barra invertida, aspa simples, quebra de linha real, separadores unicode U+2028/U+2029
+// quebram a string com SyntaxError -- confirmado real: preview do Instagram nao abria pra
+// posts com legenda multi-linha, Facebook raramente usa quebra de linha na mensagem por
+// isso nao aparecia la); 2) dentro do atributo HTML de aspas duplas (uma aspa dupla literal
+// na legenda fecha o atributo antes da hora e corrompe o onclick inteiro).
 function escAttr(s) {
-  return String(s == null ? '' : s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  return String(s == null ? '' : s)
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029')
+    .replace(/"/g, '&quot;');
 }
+
 
 // ── UI helpers ──
 function deltaHtml(curr, prev, invert=false) {
