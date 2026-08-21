@@ -15,17 +15,15 @@
 // (pega intenção de conversão) mas is_purchase_goal=false — não é venda de verdade, não pode
 // entrar aqui (testado: usar funnel_stage pro Meta inflava o número de "vendas" com leads).
 //
-// Google: a API só devolve `conversions_value` agregado por campanha, sem separar por tipo de
-// evento — não tem um sinal por-ad-set como o Meta. A melhor aproximação disponível é
-// funnel_stage='vendas' (classificado a partir do nome da campanha em
-// asun-dashboard-sync/scripts/lib/funnel.mjs). Antes disso, o gate exigia literalmente a
-// palavra "venda" no nome (`ILIKE '%venda%'`, mesmo padrão do dashboard original) — funcionava
-// pra Asun, mas a Leve Mais nomeia campanha de vendas diferente (ex: "[Rede de Pesquisa -
-// Marca]", "[S] Categorias - LM Gravataí"), então o valor de conversão real dessas campanhas
-// ficava zerado. funnel_stage resolve isso (default 'vendas' quando o nome não bate com nenhum
-// padrão de topo/alcance/institucional).
+// Google: cada linha de google_ads já vem com `conversion_value`/`sales_conversions` filtrados
+// pra categoria PURCHASE da própria conversão (calculado no sync via
+// segments.conversion_action_category — ver fetchPurchaseConversions em
+// asun-dashboard-sync/scripts/sync-google-ads.mjs), não precisa de gate aqui. Isso substituiu um
+// gate por nome de campanha (funnel_stage='vendas') que inflava/subestimava o Ticket Médio:
+// campanhas com nome não-óbvio (ex: "[S] Categorias - LM Gravataí" na Leve Mais) caíam no
+// default 'vendas' e contavam centenas de conversões de clique em categoria (valor ~R$0) junto
+// com vendas de verdade, derrubando o ticket médio artificialmente.
 const isMetaSalesRow = row => !!row.is_purchase_goal;
-const isGoogleSalesRow = row => row.funnel_stage === 'vendas';
 
 function inRange(dateStr, start, end) {
   if (!dateStr) return false;
@@ -56,8 +54,8 @@ function buildDailyPerformance(data, start, end) {
       spend: r.spend,
       clicks: r.clicks,
       conversions: r.conversions,
-      conversion_value: isGoogleSalesRow(r) ? r.conversion_value : 0,
-      sales_conversions: isGoogleSalesRow(r) ? r.conversions : 0,
+      conversion_value: r.conversion_value,
+      sales_conversions: r.sales_conversions,
     }));
   return { rows: [...metaRows, ...googleRows] };
 }
@@ -118,7 +116,8 @@ function buildMetaCampaigns(data, start, end) {
   return { rows };
 }
 
-// ── google-campaigns ── já granularidade campanha×dia, só filtra e aplica o gate ──
+// ── google-campaigns ── já granularidade campanha×dia, conversion_value/sales_conversions já
+// vêm filtrados pra PURCHASE do sync, só filtra por data ──
 function buildGoogleCampaigns(data, start, end) {
   const rows = data.google_ads
     .filter(r => inRange(r.date, start, end))
@@ -129,8 +128,8 @@ function buildGoogleCampaigns(data, start, end) {
       spend: r.spend,
       clicks: r.clicks,
       conversions: r.conversions,
-      conversion_value: isGoogleSalesRow(r) ? r.conversion_value : 0,
-      sales_conversions: isGoogleSalesRow(r) ? r.conversions : 0,
+      conversion_value: r.conversion_value,
+      sales_conversions: r.sales_conversions,
     }));
   return { rows };
 }
