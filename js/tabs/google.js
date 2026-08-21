@@ -36,6 +36,13 @@ function renderGoogleBody(filterCamp, filterFunnel) {
   const campRows = Object.values(byCamp).map(r => ({
     ...r,
     cac: r.conversions > 0 ? r.spend / r.conversions : null,
+    // CAC Vendas: só a conversão de venda real (sales_conversions, categoria PURCHASE — ver
+    // aggregate.js/sync-google-ads.mjs), não qualquer conversão configurada na conta. Uma
+    // campanha tipo "Obter Rotas"/"Categorias" tem centenas de conversões sem valor de venda —
+    // dividir o CAC por elas dava um custo-por-aquisição artificialmente baixo e sem sentido de
+    // negócio (confirmado real, Leve Mais: CAC geral batia centavos, CAC Vendas real é a ordem de
+    // R$ milhares por venda).
+    cac_vendas: r.sales_conversions > 0 ? r.spend / r.sales_conversions : null,
     roas: r.spend > 0 ? r.conversion_value / r.spend : null,
   }));
 
@@ -44,11 +51,11 @@ function renderGoogleBody(filterCamp, filterFunnel) {
 
   const totSpend = sum(campRows, 'spend'), totClicks = sum(campRows, 'clicks'), totConv = sum(campRows, 'conversions');
   const totConvValue = sum(campRows, 'conversion_value');
-  // Ticket médio usa só as conversões de venda (sales_conversions, já gated em aggregate.js) —
-  // dividir pelo total geral (que inclui campanhas de topo/tráfego sem valor associado)
-  // subestimaria o ticket.
+  // Ticket médio e CAC Médio (o KPI do topo) só contam a conversão de venda real
+  // (sales_conversions, já gated em aggregate.js) — dividir pelo total geral (que inclui
+  // campanhas de topo/tráfego sem valor associado) distorcia os dois pra baixo.
   const totSalesConv = sum(campRows, 'sales_conversions');
-  const totCAC = totConv > 0 ? totSpend / totConv : null;
+  const totCAC = totSalesConv > 0 ? totSpend / totSalesConv : null;
   const totTicket = totSalesConv > 0 ? totConvValue / totSalesConv : null;
   const totROAS = totSpend > 0 ? totConvValue / totSpend : null;
 
@@ -110,6 +117,7 @@ function renderGoogleBody(filterCamp, filterFunnel) {
           ${sortTh('google', 'Cliques', 'clicks')}
           ${sortTh('google', 'Conversões', 'conversions')}
           ${sortTh('google', 'CAC', 'cac')}
+          ${sortTh('google', 'CAC Vendas', 'cac_vendas')}
           ${sortTh('google', 'Valor Vendas', 'conversion_value')}
           ${sortTh('google', 'ROAS', 'roas')}
         </tr></thead>
@@ -121,9 +129,10 @@ function renderGoogleBody(filterCamp, filterFunnel) {
             <td class="r">${fN(r.clicks)}</td>
             <td class="r">${fN(r.conversions)}</td>
             <td class="r">${r.cac != null ? fR(r.cac) : '—'}</td>
+            <td class="r">${r.cac_vendas != null ? fR(r.cac_vendas) : '—'}</td>
             <td class="r">${fR(r.conversion_value)}</td>
             <td class="r">${r.roas != null ? fX(r.roas) : '—'}</td>
-          </tr>`).join('') : emptyRow(8)}</tbody>
+          </tr>`).join('') : emptyRow(9)}</tbody>
       </table></div>
     </div>
   `;
