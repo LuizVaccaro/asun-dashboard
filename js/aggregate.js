@@ -40,6 +40,10 @@ function buildDailyPerformance(data, start, end) {
       platform: 'Meta Ads',
       funnel_stage: r.funnel_stage,
       spend: r.spend,
+      // Meta: sinal de venda é por ad×dia (is_purchase_goal), granular demais pra restringir
+      // spend do mesmo jeito que o Google (excluir o dia inteiro do anúncio zeraria o
+      // "aquecimento" que ajudou a gerar a venda em outro dia) — sales_spend usa o spend cheio.
+      sales_spend: r.spend,
       clicks: r.clicks,
       conversions: r.conversions,
       conversion_value: isMetaSalesRow(r) ? r.conversion_value : 0,
@@ -52,6 +56,10 @@ function buildDailyPerformance(data, start, end) {
       platform: 'Google Ads',
       funnel_stage: r.funnel_stage,
       spend: r.spend,
+      // Google: sales_spend já vem restrito à(s) campanha(s) confiável(is) de venda desde o sync
+      // (ver isTrustedSalesCampaign em sync-google-ads.mjs) — campanhas tipo "Obter Rotas"/
+      // "Categorias" não entram aqui, mesmo somando spend real no canal.
+      sales_spend: r.sales_spend,
       clicks: r.clicks,
       conversions: r.conversions,
       conversion_value: r.conversion_value,
@@ -68,19 +76,25 @@ function buildKpisOverview(data, start, end, cmpStart, cmpEnd) {
   const rowsInRange = (s, e) => buildDailyPerformance(data, s, e).rows;
   const totalsOf = rows => {
     const spend = sum(rows, 'spend');
+    const salesSpend = sum(rows, 'sales_spend');
     const conversionValue = sum(rows, 'conversion_value');
     const salesConversions = sum(rows, 'sales_conversions');
     return {
       spend,
+      salesSpend,
       clicks: sum(rows, 'clicks'),
       conversions: sum(rows, 'conversions'),
       conversionValue,
       salesConversions,
       metaSpend: sum(rows.filter(r => r.platform === 'Meta Ads'), 'spend'),
       googleSpend: sum(rows.filter(r => r.platform === 'Google Ads'), 'spend'),
-      cac: salesConversions > 0 ? spend / salesConversions : null,
+      // CAC/ROAS usam sales_spend (investimento só das campanhas/canais que geram venda de
+      // verdade), não spend total — senão o investimento em campanhas de topo/tráfego sem venda
+      // (Obter Rotas, Categorias) diluía o custo por venda pra baixo... e sem venda nenhuma
+      // associada, inflava artificialmente pra cima quando dividido pelas poucas vendas reais.
+      cac: salesConversions > 0 ? salesSpend / salesConversions : null,
       ticket: salesConversions > 0 ? conversionValue / salesConversions : null,
-      roas: spend > 0 ? conversionValue / spend : null,
+      roas: salesSpend > 0 ? conversionValue / salesSpend : null,
     };
   };
 
@@ -126,6 +140,7 @@ function buildGoogleCampaigns(data, start, end) {
       funnel_stage: r.funnel_stage,
       date: r.date,
       spend: r.spend,
+      sales_spend: r.sales_spend,
       clicks: r.clicks,
       conversions: r.conversions,
       conversion_value: r.conversion_value,

@@ -39,8 +39,9 @@ function filterDiarioRows(rows, channelFilter, funnelFilter) {
 function buildDiarioRows(rows) {
   const byDate = {};
   for (const r of rows) {
-    if (!byDate[r.date]) byDate[r.date] = { date: r.date, spend: 0, clicks: 0, conversions: 0, conversion_value: 0, sales_conversions: 0 };
+    if (!byDate[r.date]) byDate[r.date] = { date: r.date, spend: 0, sales_spend: 0, clicks: 0, conversions: 0, conversion_value: 0, sales_conversions: 0 };
     byDate[r.date].spend            += Number(r.spend);
+    byDate[r.date].sales_spend       += Number(r.sales_spend);
     byDate[r.date].clicks           += Number(r.clicks);
     byDate[r.date].conversions      += Number(r.conversions);
     byDate[r.date].conversion_value += Number(r.conversion_value);
@@ -49,12 +50,12 @@ function buildDiarioRows(rows) {
   return Object.values(byDate).map(r => ({
     ...r,
     cac: r.conversions > 0 ? r.spend / r.conversions : null,
-    // CAC de Vendas: só conta a conversão de venda (purchase) real, não todo evento (lead/whatsapp
-    // misturado junto). É o número que bate quando se olha por plataforma/campanha — no agregado
-    // geral, o CAC "de todas as conversões" fica artificialmente baixo por causa desses outros
-    // eventos com custo por ação muito menor.
-    cac_vendas: r.sales_conversions > 0 ? r.spend / r.sales_conversions : null,
-    roas: r.spend > 0 ? r.conversion_value / r.spend : null,
+    // CAC de Vendas/ROAS usam sales_spend (investimento só das campanhas/canais que geram venda
+    // de verdade — ver aggregate.js), não o spend total do dia. Investimento em campanha de
+    // topo/tráfego sem venda associada (Obter Rotas, Categorias) não deveria inflar o custo por
+    // venda das campanhas que realmente vendem, mesmo estando no mesmo dia/canal.
+    cac_vendas: r.sales_conversions > 0 ? r.sales_spend / r.sales_conversions : null,
+    roas: r.sales_spend > 0 ? r.conversion_value / r.sales_spend : null,
   }));
 }
 
@@ -69,11 +70,12 @@ function renderDiarioBody(filterChannel, filterFunnel) {
   const totSpend = sum(rows, 'spend'), totClicks = sum(rows, 'clicks'), totConv = sum(rows, 'conversions');
   const totConvValue = sum(rows, 'conversion_value');
   const totSalesConv = sum(rows, 'sales_conversions');
-  // CAC Médio do card usa só conversões de venda (purchase), não o total de conversões —
-  // mistura de lead/whatsapp/purchase no agregado geral distorcia o número pra baixo.
-  const totCAC = totSalesConv > 0 ? totSpend / totSalesConv : null;
+  const totSalesSpend = sum(rows, 'sales_spend');
+  // CAC Médio e ROAS usam sales_spend (investimento só do que gera venda de verdade), não o
+  // investimento total — ver comentário em buildDiarioRows.
+  const totCAC = totSalesConv > 0 ? totSalesSpend / totSalesConv : null;
   const totTicket = totSalesConv > 0 ? totConvValue / totSalesConv : null;
-  const totROAS = totSpend > 0 ? totConvValue / totSpend : null;
+  const totROAS = totSalesSpend > 0 ? totConvValue / totSalesSpend : null;
 
   const funnelRows = filterDiarioRows(_diarioRaw, _diarioChannelFilter, null);
   const metaSpend   = sum(funnelRows.filter(r => r.platform === 'Meta Ads' && (!_diarioFunnelFilter || r.funnel_stage === _diarioFunnelFilter)), 'spend');

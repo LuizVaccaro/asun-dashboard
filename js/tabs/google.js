@@ -26,8 +26,9 @@ function renderGoogleBody(filterCamp, filterFunnel) {
 
   const byCamp = {};
   for (const r of rows) {
-    if (!byCamp[r.campaign_name]) byCamp[r.campaign_name] = { campaign_name: r.campaign_name, funnel_stage: r.funnel_stage, spend: 0, clicks: 0, conversions: 0, conversion_value: 0, sales_conversions: 0 };
+    if (!byCamp[r.campaign_name]) byCamp[r.campaign_name] = { campaign_name: r.campaign_name, funnel_stage: r.funnel_stage, spend: 0, sales_spend: 0, clicks: 0, conversions: 0, conversion_value: 0, sales_conversions: 0 };
     byCamp[r.campaign_name].spend             += Number(r.spend);
+    byCamp[r.campaign_name].sales_spend       += Number(r.sales_spend);
     byCamp[r.campaign_name].clicks            += Number(r.clicks);
     byCamp[r.campaign_name].conversions       += Number(r.conversions);
     byCamp[r.campaign_name].conversion_value  += Number(r.conversion_value);
@@ -51,13 +52,16 @@ function renderGoogleBody(filterCamp, filterFunnel) {
 
   const totSpend = sum(campRows, 'spend'), totClicks = sum(campRows, 'clicks'), totConv = sum(campRows, 'conversions');
   const totConvValue = sum(campRows, 'conversion_value');
-  // Ticket médio e CAC Médio (o KPI do topo) só contam a conversão de venda real
-  // (sales_conversions, já gated em aggregate.js) — dividir pelo total geral (que inclui
-  // campanhas de topo/tráfego sem valor associado) distorcia os dois pra baixo.
+  // CAC Médio e ROAS (os KPIs do topo) usam sales_spend (investimento só das campanhas
+  // confiáveis de venda, já filtrado em aggregate.js/sync-google-ads.mjs — ver
+  // isTrustedSalesCampaign), não o investimento total do canal. Campanhas tipo "Obter Rotas"/
+  // "Categorias" não geram venda atribuível, então incluir o gasto delas aqui inflava o CAC (e
+  // reduzia o ROAS) sem nenhuma venda pra justificar — mesmo com o Ticket Médio já certo.
   const totSalesConv = sum(campRows, 'sales_conversions');
-  const totCAC = totSalesConv > 0 ? totSpend / totSalesConv : null;
+  const totSalesSpend = sum(campRows, 'sales_spend');
+  const totCAC = totSalesConv > 0 ? totSalesSpend / totSalesConv : null;
   const totTicket = totSalesConv > 0 ? totConvValue / totSalesConv : null;
-  const totROAS = totSpend > 0 ? totConvValue / totSpend : null;
+  const totROAS = totSalesSpend > 0 ? totConvValue / totSalesSpend : null;
 
   const byDate = {};
   for (const r of rows) {
