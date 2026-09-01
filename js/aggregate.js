@@ -195,3 +195,39 @@ function buildFacebookOrganic(data, start, end) {
   const daily = data.facebook_daily.filter(r => inRange(r.date, start, end));
   return { posts, daily };
 }
+
+// ── search-console ── busca orgânica (Google Search Console) ──
+// daily: uma linha por dia, direto do sync (dimensions=['date']). queries/pages vêm com
+// granularidade dia×termo/página (dimensions=['date','query'|'page']) — agregadas aqui por
+// termo/página somando clicks/impressions; CTR recalculado do zero (não dá pra somar CTR
+// diário direto) e posição média ponderada por impressões (dia com mais impressão pesa mais,
+// mesmo critério que o próprio Search Console usa pra agregar posição no período).
+function aggregateByKey(rows, keyName) {
+  const byKey = new Map();
+  for (const r of rows) {
+    const key = r[keyName];
+    const prev = byKey.get(key) ?? { [keyName]: key, clicks: 0, impressions: 0, positionWeighted: 0 };
+    prev.clicks += Number(r.clicks) || 0;
+    prev.impressions += Number(r.impressions) || 0;
+    prev.positionWeighted += (Number(r.position) || 0) * (Number(r.impressions) || 0);
+    byKey.set(key, prev);
+  }
+  return [...byKey.values()].map(r => ({
+    [keyName]: r[keyName],
+    clicks: r.clicks,
+    impressions: r.impressions,
+    ctr: r.impressions > 0 ? r.clicks / r.impressions : 0,
+    position: r.impressions > 0 ? r.positionWeighted / r.impressions : null,
+  }));
+}
+
+function buildSearchConsole(data, start, end) {
+  const daily = (data.search_console_daily || [])
+    .filter(r => inRange(r.date, start, end))
+    .sort((a, b) => (a.date < b.date ? -1 : 1));
+  const queryRows = (data.search_console_queries || []).filter(r => inRange(r.date, start, end));
+  const pageRows = (data.search_console_pages || []).filter(r => inRange(r.date, start, end));
+  const queries = aggregateByKey(queryRows, 'query');
+  const pages = aggregateByKey(pageRows, 'page');
+  return { daily, queries, pages };
+}

@@ -70,6 +70,7 @@ const TABS = [
   {id:'google', label:'🔵 Google Ads', fn: () => tabGoogle()},
   {id:'meta', label:'🟠 Meta Ads', fn: () => tabMeta()},
   {id:'organico', label:'📷 Orgânico', fn: () => tabOrganico()},
+  {id:'busca', label:'🔍 Busca Orgânica', fn: () => tabBusca()},
 ];
 
 let activeTab = TABS[0].id;
