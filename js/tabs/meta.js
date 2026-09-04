@@ -62,9 +62,12 @@ function renderMetaCampanhas(filterCamp, filterFunnel) {
 
   const byCamp = {};
   for (const r of rows) {
-    if (!byCamp[r.campaign_name]) byCamp[r.campaign_name] = { campaign_name: r.campaign_name, funnel_stage: r.funnel_stage, spend: 0, clicks: 0, conversions: 0, conversion_value: 0, sales_conversions: 0 };
+    if (!byCamp[r.campaign_name]) byCamp[r.campaign_name] = { campaign_name: r.campaign_name, funnel_stage: r.funnel_stage, spend: 0, clicks: 0, reach: 0, conversions: 0, conversion_value: 0, sales_conversions: 0 };
     byCamp[r.campaign_name].spend             += Number(r.spend);
     byCamp[r.campaign_name].clicks            += Number(r.clicks);
+    // SUM(reach) por dia, mesmo critério já usado em Criativos (aggregate.js/buildMetaCreatives)
+    // — não deduplica a mesma pessoa alcançada em dias diferentes dentro do período.
+    byCamp[r.campaign_name].reach             += Number(r.reach);
     byCamp[r.campaign_name].conversions       += Number(r.conversions);
     byCamp[r.campaign_name].conversion_value  += Number(r.conversion_value);
     byCamp[r.campaign_name].sales_conversions += Number(r.sales_conversions);
@@ -144,6 +147,7 @@ function renderMetaCampanhas(filterCamp, filterFunnel) {
           ${sortTh('meta-campanhas', 'Campanha', 'campaign_name', 'asc', '')}
           <th>Funil</th>
           ${sortTh('meta-campanhas', 'Investimento', 'spend')}
+          ${sortTh('meta-campanhas', 'Alcance', 'reach')}
           ${sortTh('meta-campanhas', 'Cliques', 'clicks')}
           ${sortTh('meta-campanhas', 'Conversões', 'conversions')}
           ${sortTh('meta-campanhas', 'CAC', 'cac')}
@@ -155,12 +159,13 @@ function renderMetaCampanhas(filterCamp, filterFunnel) {
             <td><strong>${escHtml(r.campaign_name)}</strong></td>
             <td>${funnelBadge(r.funnel_stage)}</td>
             <td class="r">${fR(r.spend)}</td>
+            <td class="r">${fN(r.reach)}</td>
             <td class="r">${fN(r.clicks)}</td>
             <td class="r">${fN(r.conversions)}</td>
             <td class="r">${r.cac != null ? fR(r.cac) : '—'}</td>
             <td class="r">${fR(r.conversion_value)}</td>
             <td class="r">${r.roas != null ? fX(r.roas) : '—'}</td>
-          </tr>`).join('') : emptyRow(8)}</tbody>
+          </tr>`).join('') : emptyRow(9)}</tbody>
       </table></div>
     </div>
   `;

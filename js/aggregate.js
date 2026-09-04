@@ -125,6 +125,7 @@ function buildMetaCampaigns(data, start, end) {
       date: r.date,
       spend: r.spend,
       clicks: r.clicks,
+      reach: r.reach,
       conversions: r.conversions,
       conversion_value: isMetaSalesRow(r) ? r.conversion_value : 0,
       sales_conversions: isMetaSalesRow(r) ? r.conversions : 0,
