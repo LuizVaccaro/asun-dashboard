@@ -21,7 +21,7 @@ function renderGoogleBody(filterCamp, filterFunnel) {
   if (filterFunnel !== undefined) _googleFunnelFilter = filterFunnel || null;
   if (!_googleRaw) return;
 
-  const funnelScoped = _googleFunnelFilter ? _googleRaw.filter(r => r.funnel_stage === _googleFunnelFilter) : _googleRaw;
+  const funnelScoped = _googleRaw.filter(r => matchesFunnelFilter(r, _googleFunnelFilter));
   const rows = _googleFilter ? funnelScoped.filter(r => r.campaign_name === _googleFilter) : funnelScoped;
 
   const byCamp = {};
@@ -85,9 +85,10 @@ function renderGoogleBody(filterCamp, filterFunnel) {
       <div style="display:flex;align-items:center;gap:10px">
         <label style="font-size:12px;color:var(--muted-dark)">Filtrar Funil</label>
         <select class="filter-select" onchange="renderGoogleBody(undefined, this.value||null)">
-          <option value="" ${!_googleFunnelFilter ? 'selected' : ''}>Topo + Vendas</option>
-          <option value="vendas" ${_googleFunnelFilter === 'vendas' ? 'selected' : ''}>Só Vendas/Conversão</option>
-          <option value="topo" ${_googleFunnelFilter === 'topo' ? 'selected' : ''}>Só Topo de Funil</option>
+          <option value="" ${!_googleFunnelFilter ? 'selected' : ''}>Todas campanhas</option>
+          <option value="vendas" ${_googleFunnelFilter === 'vendas' ? 'selected' : ''}>Vendas</option>
+          <option value="topo" ${_googleFunnelFilter === 'topo' ? 'selected' : ''}>Branding</option>
+          <option value="ofertas" ${_googleFunnelFilter === 'ofertas' ? 'selected' : ''}>Ofertas</option>
         </select>
       </div>
     </div>

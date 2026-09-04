@@ -57,7 +57,7 @@ function renderMetaCampanhas(filterCamp, filterFunnel) {
   if (filterFunnel !== undefined) _metaCampFunnelFilter = filterFunnel || null;
   if (!_metaCampRaw) return;
 
-  const funnelScoped = _metaCampFunnelFilter ? _metaCampRaw.filter(r => r.funnel_stage === _metaCampFunnelFilter) : _metaCampRaw;
+  const funnelScoped = _metaCampRaw.filter(r => matchesFunnelFilter(r, _metaCampFunnelFilter));
   const rows = _metaCampFilter ? funnelScoped.filter(r => r.campaign_name === _metaCampFilter) : funnelScoped;
 
   const byCamp = {};
@@ -110,9 +110,10 @@ function renderMetaCampanhas(filterCamp, filterFunnel) {
       <div style="display:flex;align-items:center;gap:10px">
         <label style="font-size:12px;color:var(--muted-dark)">Filtrar Funil</label>
         <select class="filter-select" onchange="renderMetaCampanhas(undefined, this.value||null)">
-          <option value="" ${!_metaCampFunnelFilter ? 'selected' : ''}>Topo + Vendas</option>
-          <option value="vendas" ${_metaCampFunnelFilter === 'vendas' ? 'selected' : ''}>Só Vendas/Conversão</option>
-          <option value="topo" ${_metaCampFunnelFilter === 'topo' ? 'selected' : ''}>Só Topo de Funil</option>
+          <option value="" ${!_metaCampFunnelFilter ? 'selected' : ''}>Todas campanhas</option>
+          <option value="vendas" ${_metaCampFunnelFilter === 'vendas' ? 'selected' : ''}>Vendas</option>
+          <option value="topo" ${_metaCampFunnelFilter === 'topo' ? 'selected' : ''}>Branding</option>
+          <option value="ofertas" ${_metaCampFunnelFilter === 'ofertas' ? 'selected' : ''}>Ofertas</option>
         </select>
       </div>
     </div>

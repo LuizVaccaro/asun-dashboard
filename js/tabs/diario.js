@@ -33,7 +33,7 @@ async function tabDiario() {
 function filterDiarioRows(rows, channelFilter, funnelFilter) {
   return rows.filter(r =>
     (!channelFilter || r.platform === channelFilter) &&
-    (!funnelFilter || r.funnel_stage === funnelFilter));
+    matchesFunnelFilter(r, funnelFilter));
 }
 
 function buildDiarioRows(rows) {
@@ -78,8 +78,8 @@ function renderDiarioBody(filterChannel, filterFunnel) {
   const totROAS = totSalesSpend > 0 ? totConvValue / totSalesSpend : null;
 
   const funnelRows = filterDiarioRows(_diarioRaw, _diarioChannelFilter, null);
-  const metaSpend   = sum(funnelRows.filter(r => r.platform === 'Meta Ads' && (!_diarioFunnelFilter || r.funnel_stage === _diarioFunnelFilter)), 'spend');
-  const googleSpend = sum(funnelRows.filter(r => r.platform === 'Google Ads' && (!_diarioFunnelFilter || r.funnel_stage === _diarioFunnelFilter)), 'spend');
+  const metaSpend   = sum(funnelRows.filter(r => r.platform === 'Meta Ads' && matchesFunnelFilter(r, _diarioFunnelFilter)), 'spend');
+  const googleSpend = sum(funnelRows.filter(r => r.platform === 'Google Ads' && matchesFunnelFilter(r, _diarioFunnelFilter)), 'spend');
 
   const st = getSort('diario', 'date', 'desc');
   const sorted = sortRows(rows, st.key, st.dir);
@@ -97,9 +97,10 @@ function renderDiarioBody(filterChannel, filterFunnel) {
       <div style="display:flex;align-items:center;gap:10px">
         <label style="font-size:12px;color:var(--muted-dark);white-space:nowrap">Filtrar Funil</label>
         <select class="filter-select" onchange="renderDiarioBody(undefined, this.value||null)">
-          <option value="" ${!_diarioFunnelFilter ? 'selected' : ''}>Topo + Vendas</option>
-          <option value="vendas" ${_diarioFunnelFilter === 'vendas' ? 'selected' : ''}>Só Vendas/Conversão</option>
-          <option value="topo" ${_diarioFunnelFilter === 'topo' ? 'selected' : ''}>Só Topo de Funil</option>
+          <option value="" ${!_diarioFunnelFilter ? 'selected' : ''}>Todas campanhas</option>
+          <option value="vendas" ${_diarioFunnelFilter === 'vendas' ? 'selected' : ''}>Vendas</option>
+          <option value="topo" ${_diarioFunnelFilter === 'topo' ? 'selected' : ''}>Branding</option>
+          <option value="ofertas" ${_diarioFunnelFilter === 'ofertas' ? 'selected' : ''}>Ofertas</option>
         </select>
       </div>
     </div>

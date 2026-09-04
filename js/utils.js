@@ -97,6 +97,17 @@ function kpiCard(label, val, cmpVal, fFn=fR, cls='c-brand', invert=false) {
   </div>`;
 }
 
+// Filtro de Funil (Desempenho Diário/Google Ads/Meta Ads): '' = todas, 'vendas'/'topo' = pelo
+// funnel_stage já classificado no sync (ver funnel.mjs), 'ofertas' é diferente — não é um
+// funnel_stage, é um recorte por nome de campanha (contém "Promo"/"Promoção") por cima de
+// qualquer funil, pedido do usuário 04/09/2026. "promo" já cobre os dois casos (é prefixo de
+// "promoção").
+function matchesFunnelFilter(row, filterValue) {
+  if (!filterValue) return true;
+  if (filterValue === 'ofertas') return /promo/i.test(row.campaign_name || '');
+  return row.funnel_stage === filterValue;
+}
+
 function funnelBadge(stage) {
   const isVendas = stage === 'vendas';
   const bg = isVendas ? '#16a34a1a' : '#ed723e1a';

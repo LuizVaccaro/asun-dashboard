@@ -38,6 +38,7 @@ function buildDailyPerformance(data, start, end) {
     .map(r => ({
       date: r.date,
       platform: 'Meta Ads',
+      campaign_name: r.campaign_name,
       funnel_stage: r.funnel_stage,
       spend: r.spend,
       // Meta: sinal de venda é por ad×dia (is_purchase_goal), granular demais pra restringir
@@ -54,6 +55,7 @@ function buildDailyPerformance(data, start, end) {
     .map(r => ({
       date: r.date,
       platform: 'Google Ads',
+      campaign_name: r.campaign_name,
       funnel_stage: r.funnel_stage,
       spend: r.spend,
       // Google: sales_spend já vem restrito à(s) campanha(s) confiável(is) de venda desde o sync
