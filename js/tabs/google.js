@@ -50,7 +50,7 @@ function renderGoogleBody(filterCamp, filterFunnel) {
   const st = getSort('google', 'spend', 'desc');
   const sorted = sortRows(campRows, st.key, st.dir);
 
-  const totSpend = sum(campRows, 'spend'), totClicks = sum(campRows, 'clicks'), totConv = sum(campRows, 'conversions');
+  const totSpend = sum(campRows, 'spend'), totClicks = sum(campRows, 'clicks');
   const totConvValue = sum(campRows, 'conversion_value');
   // CAC Médio e ROAS (os KPIs do topo) usam sales_spend (investimento só das campanhas
   // confiáveis de venda, já filtrado em aggregate.js/sync-google-ads.mjs — ver
@@ -96,7 +96,7 @@ function renderGoogleBody(filterCamp, filterFunnel) {
     <div class="kpi-grid cols-4" style="margin-bottom:12px">
       ${kpiCard('Investimento', totSpend, undefined, fR, 'c-blue')}
       ${kpiCard('Cliques', totClicks, undefined, fN, 'c-green')}
-      ${kpiCard('Conversões', totConv, undefined, fN, 'c-brand')}
+      ${kpiCard('Vendas', totSalesConv, undefined, fN, 'c-brand')}
       ${kpiCard('CAC Médio', totCAC, undefined, fR, 'c-brand', true)}
     </div>
     <div class="kpi-grid cols-3" style="margin-bottom:20px">

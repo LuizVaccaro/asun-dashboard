@@ -67,7 +67,7 @@ function renderDiarioBody(filterChannel, filterFunnel) {
   const filtered = filterDiarioRows(_diarioRaw, _diarioChannelFilter, _diarioFunnelFilter);
   const rows = buildDiarioRows(filtered);
 
-  const totSpend = sum(rows, 'spend'), totClicks = sum(rows, 'clicks'), totConv = sum(rows, 'conversions');
+  const totSpend = sum(rows, 'spend'), totClicks = sum(rows, 'clicks');
   const totConvValue = sum(rows, 'conversion_value');
   const totSalesConv = sum(rows, 'sales_conversions');
   const totSalesSpend = sum(rows, 'sales_spend');
@@ -109,7 +109,7 @@ function renderDiarioBody(filterChannel, filterFunnel) {
       ${kpiCard('Investimento Total', totSpend, _diarioTotals.totals?.cmpSpend, fR, 'c-brand')}
       ${kpiCard('Meta Ads', metaSpend, _diarioTotals.totals?.cmpMetaSpend, fR, 'c-orange')}
       ${kpiCard('Google Ads', googleSpend, _diarioTotals.totals?.cmpGoogleSpend, fR, 'c-blue')}
-      ${kpiCard('Conversões', totConv, _diarioTotals.totals?.cmpConversions, fN, 'c-green')}
+      ${kpiCard('Vendas', totSalesConv, _diarioTotals.totals?.cmpSalesConversions, fN, 'c-green')}
     </div>
     <div class="kpi-grid cols-4" style="margin-bottom:20px">
       ${kpiCard('CAC Médio', totCAC, _diarioTotals.totals?.cmpCAC, fR, 'c-brand', true)}

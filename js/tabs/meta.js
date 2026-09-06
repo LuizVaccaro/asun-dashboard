@@ -81,13 +81,18 @@ function renderMetaCampanhas(filterCamp, filterFunnel) {
   const st = getSort('meta-campanhas', 'spend', 'desc');
   const sorted = sortRows(campRows, st.key, st.dir);
 
-  const totSpend = sum(campRows, 'spend'), totClicks = sum(campRows, 'clicks'), totConv = sum(campRows, 'conversions');
+  const totSpend = sum(campRows, 'spend'), totClicks = sum(campRows, 'clicks');
   const totConvValue = sum(campRows, 'conversion_value');
   // Ticket médio usa só as conversões de venda (sales_conversions, já gated em aggregate.js —
   // vem de is_purchase_goal por anúncio, não de funnel_stage; mesma ideia do google.js, sinal
   // diferente porque o Meta tem precisão por conjunto de anúncios).
   const totSalesConv = sum(campRows, 'sales_conversions');
-  const totCAC = totConv > 0 ? totSpend / totConv : null;
+  // CAC Médio (card do topo) usa vendas, não conversões totais (lead+venda misturados inflava o
+  // número) — mesmo critério já usado em Desempenho Diário/Google Ads. Divide pelo spend total
+  // (não um "sales_spend" restrito): no Meta o sinal de venda é por ad×dia (is_purchase_goal),
+  // granular demais pra restringir investimento do mesmo jeito que o Google faz por campanha
+  // (mesma decisão já tomada em buildDailyPerformance/aggregate.js pras linhas de Meta Ads).
+  const totCAC = totSalesConv > 0 ? totSpend / totSalesConv : null;
   const totTicket = totSalesConv > 0 ? totConvValue / totSalesConv : null;
   const totROAS = totSpend > 0 ? totConvValue / totSpend : null;
 
@@ -124,7 +129,7 @@ function renderMetaCampanhas(filterCamp, filterFunnel) {
     <div class="kpi-grid cols-4" style="margin-bottom:12px">
       ${kpiCard('Investimento', totSpend, undefined, fR, 'c-orange')}
       ${kpiCard('Cliques', totClicks, undefined, fN, 'c-green')}
-      ${kpiCard('Conversões', totConv, undefined, fN, 'c-brand')}
+      ${kpiCard('Vendas', totSalesConv, undefined, fN, 'c-brand')}
       ${kpiCard('CAC Médio', totCAC, undefined, fR, 'c-brand', true)}
     </div>
     <div class="kpi-grid cols-3" style="margin-bottom:20px">

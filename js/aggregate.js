@@ -105,6 +105,7 @@ function buildKpisOverview(data, start, end, cmpStart, cmpEnd) {
     const cmpTotals = totalsOf(rowsInRange(cmpStart, cmpEnd));
     totals.cmpSpend = cmpTotals.spend;
     totals.cmpConversions = cmpTotals.conversions;
+    totals.cmpSalesConversions = cmpTotals.salesConversions;
     totals.cmpMetaSpend = cmpTotals.metaSpend;
     totals.cmpGoogleSpend = cmpTotals.googleSpend;
     totals.cmpCAC = cmpTotals.cac;
