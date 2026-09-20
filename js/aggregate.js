@@ -237,8 +237,9 @@ function buildSearchConsole(data, start, end) {
 }
 
 // ── ga4 ── acessos do site (Google Analytics 4) ──
-// daily: uma linha por dia, direto do sync. channels/cities vêm dia×canal e dia×cidade (top 30
-// cidades/dia no sync) — somadas aqui por canal/cidade. Só métricas ADITIVAS entram: sessões,
+// daily: uma linha por dia, direto do sync. cities vem dia×cidade (top 30 cidades/dia no sync) —
+// somadas aqui por cidade. (ga4_channels também é sincronizado, mas a aba não usa mais — removido
+// da tela a pedido em 20/09/2026.) Só métricas ADITIVAS entram: sessões,
 // pageviews, sessões engajadas e novos usuários. Usuários ativos NÃO soma entre dias (a mesma
 // pessoa em 2 dias contaria 2x — o número único do período só o GA4 calcula) e bounce/engajamento
 // viram razão recalculada de engagedSessions/sessions, nunca média de taxas diárias. `keyEvents`
@@ -264,13 +265,11 @@ function buildGa4(data, start, end) {
   const daily = (data.ga4_daily || [])
     .filter(r => inRange(r.date, start, end))
     .sort((a, b) => (a.date < b.date ? -1 : 1));
-  const channelRows = (data.ga4_channels || []).filter(r => inRange(r.date, start, end));
   const cityRows = (data.ga4_cities || []).filter(r => inRange(r.date, start, end));
-  const channels = aggregateGa4(channelRows, r => r.channel, r => ({ channel: r.channel }));
   const cities = aggregateGa4(
     cityRows,
     r => `${r.region}|${r.city}`,
     r => ({ city: r.city, region: (r.region || '').replace(/^State of /, '') }),
   );
-  return { daily, channels, cities };
+  return { daily, cities };
 }
