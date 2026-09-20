@@ -245,6 +245,9 @@ function buildSearchConsole(data, start, end) {
 // viram razão recalculada de engagedSessions/sessions, nunca média de taxas diárias. `keyEvents`
 // fica de fora de propósito: nesses sites vem em ~3x o volume de sessões (eventos demais marcados
 // como "chave"), então não representa conversão.
+// Valor exato que o GA4 devolve na dimensão `region` pro RS (ver history/*/ga4-cities.json).
+const GA4_REGION = 'State of Rio Grande do Sul';
+
 function aggregateGa4(rows, keyFn, labelFn) {
   const byKey = new Map();
   for (const r of rows) {
@@ -265,11 +268,11 @@ function buildGa4(data, start, end) {
   const daily = (data.ga4_daily || [])
     .filter(r => inRange(r.date, start, end))
     .sort((a, b) => (a.date < b.date ? -1 : 1));
-  const cityRows = (data.ga4_cities || []).filter(r => inRange(r.date, start, end));
-  const cities = aggregateGa4(
-    cityRows,
-    r => `${r.region}|${r.city}`,
-    r => ({ city: r.city, region: (r.region || '').replace(/^State of /, '') }),
-  );
+  // Só o RS (pedido em 20/09/2026): cidades do estado + as sessões do RS sem cidade identificada
+  // (city='(not set)' dentro do RS — é a parte grande do "não identificado"; resíduos de outros
+  // estados/países ficam de fora junto com o resto).
+  const cityRows = (data.ga4_cities || [])
+    .filter(r => inRange(r.date, start, end) && r.region === GA4_REGION);
+  const cities = aggregateGa4(cityRows, r => r.city, r => ({ city: r.city }));
   return { daily, cities };
 }
