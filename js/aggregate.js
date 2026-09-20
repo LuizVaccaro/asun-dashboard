@@ -235,3 +235,42 @@ function buildSearchConsole(data, start, end) {
   const pages = aggregateByKey(pageRows, 'page');
   return { daily, queries, pages };
 }
+
+// ── ga4 ── acessos do site (Google Analytics 4) ──
+// daily: uma linha por dia, direto do sync. channels/cities vêm dia×canal e dia×cidade (top 30
+// cidades/dia no sync) — somadas aqui por canal/cidade. Só métricas ADITIVAS entram: sessões,
+// pageviews, sessões engajadas e novos usuários. Usuários ativos NÃO soma entre dias (a mesma
+// pessoa em 2 dias contaria 2x — o número único do período só o GA4 calcula) e bounce/engajamento
+// viram razão recalculada de engagedSessions/sessions, nunca média de taxas diárias. `keyEvents`
+// fica de fora de propósito: nesses sites vem em ~3x o volume de sessões (eventos demais marcados
+// como "chave"), então não representa conversão.
+function aggregateGa4(rows, keyFn, labelFn) {
+  const byKey = new Map();
+  for (const r of rows) {
+    const key = keyFn(r);
+    const prev = byKey.get(key) ?? { ...labelFn(r), sessions: 0, pageviews: 0, engagedSessions: 0 };
+    prev.sessions += Number(r.sessions) || 0;
+    prev.pageviews += Number(r.screenPageViews) || 0;
+    prev.engagedSessions += Number(r.engagedSessions) || 0;
+    byKey.set(key, prev);
+  }
+  return [...byKey.values()].map(r => ({
+    ...r,
+    engagementRate: r.sessions > 0 ? r.engagedSessions / r.sessions : null,
+  }));
+}
+
+function buildGa4(data, start, end) {
+  const daily = (data.ga4_daily || [])
+    .filter(r => inRange(r.date, start, end))
+    .sort((a, b) => (a.date < b.date ? -1 : 1));
+  const channelRows = (data.ga4_channels || []).filter(r => inRange(r.date, start, end));
+  const cityRows = (data.ga4_cities || []).filter(r => inRange(r.date, start, end));
+  const channels = aggregateGa4(channelRows, r => r.channel, r => ({ channel: r.channel }));
+  const cities = aggregateGa4(
+    cityRows,
+    r => `${r.region}|${r.city}`,
+    r => ({ city: r.city, region: (r.region || '').replace(/^State of /, '') }),
+  );
+  return { daily, channels, cities };
+}
