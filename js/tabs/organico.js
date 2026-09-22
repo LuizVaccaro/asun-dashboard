@@ -96,7 +96,7 @@ function orgStatCard(icon, label, total, color, sub) {
 
 function orgPeriodNote() {
   return `<div class="c-muted" style="font-size:12px;margin:-8px 0 16px">
-    Visualizações, interações e cliques são o total do período selecionado (a Meta só entrega essas métricas agregadas, sem quebra por dia). "Conversas" e "Conversões" do Gerenciador não aparecem aqui — exigem permissão de mensageria e catálogo de produtos configurado, que essa conta não tem.
+    "Conversas" e "Conversões" do Gerenciador não aparecem aqui — exigem permissão de mensageria e catálogo de produtos configurado, que essa conta não tem. "Interações" da Página do Facebook (page_post_engagements) é uma métrica mais ampla que o card "Interações com o conteúdo" do Meta Business Suite — inclui cliques e outras ações além de curtida/comentário/compartilhamento, por isso costuma vir mais alta.
   </div>`;
 }
 
@@ -114,19 +114,21 @@ async function renderInstagramOrganic() {
   const dates = sortedDaily.map(d => d.date);
   const s = (k) => sum(sortedDaily, k);
   const lastFollowers = [...sortedDaily].reverse().find(d => d.follower_count != null)?.follower_count ?? null;
-  // views/follows_and_unfollows/accounts_engaged são metric_type=total_value: só um valor agregado
-  // por sync (gravado no dia mais recente do range pedido), não uma série — pega o último não-nulo.
-  const lastAgg = (k) => [...sortedDaily].reverse().find(d => d[k] != null)?.[k] ?? null;
-  const netFollows = lastAgg('follows_and_unfollows');
+  // Desde a correção de 22/09/2026, profile_views/website_clicks/total_interactions/views/
+  // accounts_engaged/follows_and_unfollows já vêm como valor diário real (1 chamada por dia no
+  // sync, não mais 1 agregado por sync inteiro) — soma normal, igual Alcance. Histórico anterior a
+  // essa data ainda pode ter o valor antigo (agregado de ~3-4 dias repetido) até o backfill passar.
+  const netFollows = s('follows_and_unfollows');
 
   const cards = [
     orgMetricCard('👁️', 'Alcance', dates, sortedDaily.map(d => +d.reach || 0), s('reach'), '#16a34a'),
     orgMetricCard('👥', 'Seguidores', dates, sortedDaily.map(d => d.follower_count != null ? +d.follower_count : null), lastFollowers, 'var(--brand)',
       { sub: `Variação líquida no período: <strong>${netFollows == null ? '—' : (netFollows >= 0 ? '+' : '') + fN(netFollows)}</strong>` }),
-    orgStatCard('🎬', 'Visualizações', lastAgg('views'), '#2563eb'),
-    orgStatCard('💬', 'Interações', lastAgg('accounts_engaged'), '#9551FB', `${fN(lastAgg('total_interactions'))} interações no conteúdo`),
-    orgStatCard('🔗', 'Cliques no Link', lastAgg('website_clicks'), '#ed723e'),
-    orgStatCard('🙋', 'Visitas ao Perfil', lastAgg('profile_views'), '#e0435a'),
+    orgMetricCard('🎬', 'Visualizações', dates, sortedDaily.map(d => +d.views || 0), s('views'), '#2563eb'),
+    orgMetricCard('💬', 'Interações', dates, sortedDaily.map(d => +d.accounts_engaged || 0), s('accounts_engaged'), '#9551FB',
+      { sub: `${fN(s('total_interactions'))} interações no conteúdo` }),
+    orgMetricCard('🔗', 'Cliques no Link', dates, sortedDaily.map(d => +d.website_clicks || 0), s('website_clicks'), '#ed723e'),
+    orgMetricCard('🙋', 'Visitas ao Perfil', dates, sortedDaily.map(d => +d.profile_views || 0), s('profile_views'), '#e0435a'),
   ];
 
   const st = getSort('ig-media', 'posted_at', 'desc');
