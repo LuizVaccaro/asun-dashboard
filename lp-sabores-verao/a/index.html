@@ -142,15 +142,22 @@
           </ul>
           <a href="#reserva" class="btn btn-pri">Quero participar</a>
         </div>
-        <div class="mosaic reveal" aria-label="Imagens ilustrativas da campanha">
-          <img class="m-tall" src="../assets/foto-drink-alecrim-1000x1250.webp" alt="Drink com gelo e ramo de alecrim, imagem ilustrativa" width="1000" height="1250" loading="lazy">
-          <img class="m-wide" src="../assets/foto-vela-mesa-1600x900.webp" alt="Mesa à luz de velas, imagem ilustrativa" width="1600" height="900" loading="lazy">
-          <img class="m-wide" src="../assets/foto-azeitonas-1600x640.webp" alt="Petiscos com azeitonas, imagem ilustrativa" width="1600" height="640" loading="lazy">
-        </div>
+        <figure class="mosaic-wrap reveal">
+          <span class="mosaic-tag">Encontros anteriores</span>
+          <div class="mosaic" role="group" aria-label="Fotos reais de encontros anteriores do Asun">
+            <img class="m-tall" src="../assets/experiencia-01-prosecco-servido.webp" width="1000" height="1250" loading="lazy" decoding="async"
+                 alt="Espumante sendo servido em uma taça durante a degustação de um encontro anterior do Asun">
+            <img class="m-wide" src="../assets/experiencia-02-mesa-paes.webp" width="1600" height="900" loading="lazy" decoding="async"
+                 alt="Mesa farta de pães, croissants, sanduíches e petiscos em um encontro anterior do Asun">
+            <img class="m-wide m-queijo" src="../assets/experiencia-03-queijo-azul.webp" width="1600" height="640" loading="lazy" decoding="async"
+                 alt="Travessa de queijo azul em cubos com uvas verdes, uvas pretas e tâmaras em um encontro anterior do Asun">
+          </div>
+          <figcaption class="mosaic-note">Fotos reais de encontros anteriores do Asun. O Sabores de Verão é a 1ª edição.</figcaption>
+        </figure>
       </div>
     </section>
 
-    <!-- 4. Nossos encontros (PLACEHOLDER — sem fotos reais ainda) -->
+    <!-- 4. Nossos encontros (fotos reais de encontros anteriores) -->
     <section class="sec" id="encontros">
       <div class="wrap">
         <div class="sec-head reveal">
@@ -158,16 +165,45 @@
           <h2 class="h2">O Asun também é lugar de encontro.</h2>
           <p class="body-lg">Alguns momentos de outros encontros que já fizemos com nossos clientes.</p>
         </div>
-        <!-- PLACEHOLDER: substituir cada .ph-tile por <figure><img loading="lazy"><figcaption>[Nome do encontro] · [Cidade] · [Mês/ano]</figcaption></figure>
-             Usar SÓ fotos reais e autorizadas. NÃO usar as artes do Sabores de Verão aqui (é a 1ª edição). -->
-        <ul class="gallery" data-placeholder="true">
-          <li class="ph-tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Em breve, fotos dos nossos encontros por aqui.</span></li>
-          <li class="ph-tile" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></li>
-          <li class="ph-tile" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></li>
-          <li class="ph-tile" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></li>
-          <li class="ph-tile" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></li>
-          <li class="ph-tile" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></li>
+        <ul class="gallery">
+          <li><figure>
+            <picture><source srcset="../assets/galeria-01-mesa-do-encontro.webp" type="image/webp">
+              <img src="../assets/galeria-01-mesa-do-encontro.jpg" width="1440" height="1080" loading="lazy" decoding="async"
+                   alt="Mesa comprida com toalha escura, pães, queijos, azeites e arranjos de flores, com convidados ao fundo em um encontro Asun"></picture>
+            <figcaption>Encontro · mesa posta</figcaption>
+          </figure></li>
+          <li><figure>
+            <picture><source srcset="../assets/galeria-02-brinde-taca-asun.webp" type="image/webp">
+              <img src="../assets/galeria-02-brinde-taca-asun.jpg" width="1440" height="1080" loading="lazy" decoding="async"
+                   alt="Mão segurando uma taça de vinho branco com a logo do Asun Supermercados gravada"></picture>
+            <figcaption>Brinde · taça Asun</figcaption>
+          </figure></li>
+          <li><figure>
+            <picture><source srcset="../assets/galeria-03-queijos-brie.webp" type="image/webp">
+              <img src="../assets/galeria-03-queijos-brie.jpg" width="1440" height="1080" loading="lazy" decoding="async"
+                   alt="Queijo brie coberto com geleia de frutas vermelhas e uvas, sobre tábua de madeira, com tábuas de queijos e pães ao fundo"></picture>
+            <figcaption>Degustação · queijos</figcaption>
+          </figure></li>
+          <li><figure>
+            <picture><source srcset="../assets/galeria-04-servico-vinhos.webp" type="image/webp">
+              <img src="../assets/galeria-04-servico-vinhos.jpg" width="1440" height="1080" loading="lazy" decoding="async"
+                   alt="Vinho rosé sendo servido em uma taça Asun durante a degustação, com garrafas no balcão e pessoas ao fundo"></picture>
+            <figcaption>Serviço · vinhos</figcaption>
+          </figure></li>
+          <li><figure>
+            <picture><source srcset="../assets/galeria-05-burrata.webp" type="image/webp">
+              <img src="../assets/galeria-05-burrata.jpg" width="1440" height="1080" loading="lazy" decoding="async"
+                   alt="Prato com burrata, calda de frutas vermelhas e torradas finas servido na degustação"></picture>
+            <figcaption>Petiscos · burrata</figcaption>
+          </figure></li>
+          <li><figure>
+            <picture><source srcset="../assets/galeria-06-whisky.webp" type="image/webp">
+              <img src="../assets/galeria-06-whisky.jpg" width="1440" height="1080" loading="lazy" decoding="async"
+                   alt="Garrafa de whisky escocês 12 anos, de rótulo preto e dourado, apresentada na mão durante a degustação"></picture>
+            <figcaption>Seleção · destilados</figcaption>
+          </figure></li>
         </ul>
+        <p class="gallery-note">Fotos de encontros anteriores do Asun.</p>
       </div>
     </section>
 
