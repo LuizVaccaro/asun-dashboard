@@ -102,6 +102,7 @@ function initReveal() {
     entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, { rootMargin: '0px 0px -8% 0px' });
   els.forEach((el) => io.observe(el));
+  setTimeout(() => document.documentElement.classList.add('reveal-timeout'), 3000);
 }
 
 // Barra fixa (mobile): aparece depois do hero, some com a Reserva visível
@@ -137,9 +138,10 @@ function initForm() {
     nome: $('nome'), whatsapp: $('whatsapp'), quantidade: $('quantidade'),
     precoOk: $('aceite-preco'), lgpdOk: $('aceite-lgpd')
   };
-  const totalEl = $('total');
-  const cashbackEl = $('sum-cashback');
-  const qtdResumoEl = $('qtd-resumo');
+  // Escopo no form: um id repetido em outra seção nunca mais apaga a página
+  const totalEl = form.querySelector('[data-sum="total"]') || $('total');
+  const cashbackEl = form.querySelector('[data-sum="cashback"]') || $('sum-cashback');
+  const qtdResumoEl = form.querySelector('[data-sum="qtd"]') || $('qtd-resumo');
   const statusEl = $('form-status');
   const btn = $('enviar');
   const btnLabel = btn.querySelector('.btn-label');
