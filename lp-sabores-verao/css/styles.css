@@ -102,11 +102,11 @@ button,input{font:inherit}
 .mosaic img{flex:none;width:78%;height:320px;object-fit:cover;border-radius:var(--r-card);scroll-snap-align:start}
 /* Mosaico com fotos reais: selo + nota (design.md 5.2) */
 .mosaic-wrap{position:relative;margin:0;min-width:0}
-.mosaic-tag{position:absolute;top:12px;left:12px;z-index:2;display:inline-flex;align-items:center;gap:8px;
-  background:#191919;color:#fff;font:700 11px/1.25 var(--font);letter-spacing:.08em;text-transform:uppercase;
-  padding:9px 13px 9px 11px;border-radius:999px;pointer-events:none;max-width:min(92%,280px);
-  white-space:normal;text-wrap:balance}
-.mosaic-tag::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--amarelo);flex:none}
+.mosaic-tag{position:absolute;top:12px;left:12px;z-index:2;display:inline-grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:8px;
+  background:#191919;color:#fff;font:700 11px/1.25 var(--font);letter-spacing:.06em;text-transform:uppercase;
+  padding:9px 13px 9px 11px;border-radius:999px;pointer-events:none;max-width:calc(78% - 24px);box-sizing:border-box;
+  white-space:normal;text-wrap:balance;line-height:1.25}
+.mosaic-tag::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--amarelo)}
 .mosaic-note{font-size:14px;line-height:1.4;color:#4A4A4A;margin-top:12px}
 .mosaic .m-queijo{object-position:40% 50%}
 
@@ -297,7 +297,7 @@ button,input{font:inherit}
   .gallery{display:grid;grid-template-columns:repeat(3,1fr);margin:0;padding:0;overflow:visible}
   .ph-tile{width:auto}
   .gallery>li:not(.ph-tile){width:auto}
-  .mosaic-tag{top:16px;left:16px;font-size:12px;letter-spacing:.1em;max-width:min(70%,360px)}
+  .mosaic-tag{top:16px;left:16px;font-size:12px;letter-spacing:.06em;max-width:calc(50% - 32px)}
   .cb-grid{grid-template-columns:7fr 5fr}
   .cb-card{padding:36px}
   .display{font-size:96px}
