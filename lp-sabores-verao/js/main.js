@@ -138,7 +138,7 @@ function initForm() {
     precoOk: $('aceite-preco'), lgpdOk: $('aceite-lgpd')
   };
   const totalEl = $('total');
-  const cashbackEl = $('cashback');
+  const cashbackEl = $('sum-cashback');
   const qtdResumoEl = $('qtd-resumo');
   const statusEl = $('form-status');
   const btn = $('enviar');
