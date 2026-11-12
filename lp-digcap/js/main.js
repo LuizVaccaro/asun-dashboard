@@ -26,9 +26,11 @@ var CONFIG = {
   formId: "lp_advogados",     // conversoes-gtm.md §4.1
   leadSource: "lp_advogados", // conversoes-gtm.md §4.1
   consentVersion: "lp-v2-rascunho-2026-11-12", // versão (e data) do texto de consentimento; trocar quando a DigCap aprovar o texto
-  clickIdCookieDays: 7,       // conversoes-gtm.md §4.5: "primeiro valor visto na sessão/7 dias". (Pedido do PM: 90 dias se o doc não dissesse nada; o doc diz 7.)
-  clickIdPolicy: "first",     // "first" = mantém o primeiro valor visto (doc §4.5) | "last" = o clique novo sobrescreve
-  cookieNames: { gclid: "gclid", fbclid: "fbclid" },
+  clickIdCookieDays: 90,      // validade dos cookies first-party de click id (gclid, fbclid, wbraid, gbraid, *_last) e do dc_attr (decisão do bot DigCap)
+  clickIdPolicy: "first",     // origem = primeiro clique ("first"). O último clique é guardado À PARTE em gclid_last, fbclid_last, wbraid_last, gbraid_last. "last" = o clique novo sobrescreve também o primeiro.
+  cookiesRequireConsent: true, // true = NENHUM cookie/localStorage/sessionStorage é escrito antes do consentimento (valores só em memória). Pendente da política de privacidade da DigCap.
+  cookieConsentTrigger: "submit", // quando considerar o consentimento dado: "submit" = envio válido do passo 2 com a caixa marcada (padrão) | "checkbox" = ao marcar a caixa (desmarcar remove os cookies gravados nesta visita)
+  cookieNames: { gclid: "gclid", fbclid: "fbclid", wbraid: "wbraid", gbraid: "gbraid" }, // o cookie de último clique é <nome>_last
   cookieDomain: "",           // vazio = host atual. Na produção pode ser ".digcap.com.br" se a LP ficar em subdomínio.
   markLocalSubmitsAsTest: false, // true = com Pipedrive OFF, form_submit sai com is_test:true (evita contar conversão de teste se o GTM estiver ligado)
 
@@ -50,8 +52,8 @@ var CONFIG = {
 })();
 
 /* Mapeamento campo do formulário -> campo do Pipedrive (conversoes-gtm.md §5).
-   confirmed:true  = nome vem do documento (ainda "a confirmar" no Pipedrive real).
-   confirmed:false = campo NÃO listado no documento; nome sugerido, precisa de decisão/permissão. */
+   Em 12/11/2026 o bot DigCap definiu estes nomes como o padrão (incluindo os *_last, sugeridos por esta LP).
+   confirmed:false ficaria em _unconfirmed_fields do envelope, se algum campo novo ainda não tiver decisão. */
 var PIPEDRIVE_FIELD_MAP = {
   nome:             { pipedrive: "person.name",          confirmed: true },
   email:            { pipedrive: "person.email",         confirmed: true },
@@ -69,19 +71,23 @@ var PIPEDRIVE_FIELD_MAP = {
   fbclid:           { pipedrive: "fbclid",               confirmed: true },
   landing_url:      { pipedrive: "landing_url",          confirmed: true },
   is_test:          { pipedrive: "is_test",              confirmed: true },
-  wbraid:           { pipedrive: "wbraid",               confirmed: false },
-  gbraid:           { pipedrive: "gbraid",               confirmed: false },
-  _fbp:             { pipedrive: "fbp",                  confirmed: false },
-  _fbc:             { pipedrive: "fbc",                  confirmed: false },
-  ga_client_id:     { pipedrive: "ga_client_id",         confirmed: false },
-  consent_version:  { pipedrive: "consent_version",      confirmed: false },
-  referrer:         { pipedrive: "referrer",             confirmed: false },
-  form_id:          { pipedrive: "form_id",              confirmed: false },
-  submitted_at:     { pipedrive: "submitted_at",         confirmed: false },
-  event_id:         { pipedrive: "event_id",             confirmed: false },
-  oab:              { pipedrive: "oab_numero",           confirmed: false },
-  oab_uf:           { pipedrive: "oab_uf",               confirmed: false },
-  processo:         { pipedrive: "numero_processo",      confirmed: false }
+  wbraid:           { pipedrive: "wbraid",               confirmed: true },
+  gbraid:           { pipedrive: "gbraid",               confirmed: true },
+  _fbp:             { pipedrive: "fbp",                  confirmed: true },
+  _fbc:             { pipedrive: "fbc",                  confirmed: true },
+  ga_client_id:     { pipedrive: "ga_client_id",         confirmed: true },
+  consent_version:  { pipedrive: "consent_version",      confirmed: true },
+  referrer:         { pipedrive: "referrer",             confirmed: true },
+  form_id:          { pipedrive: "form_id",              confirmed: true },
+  submitted_at:     { pipedrive: "submitted_at",         confirmed: true },
+  event_id:         { pipedrive: "event_id",             confirmed: true },
+  gclid_last:       { pipedrive: "gclid_last",           confirmed: true },
+  fbclid_last:      { pipedrive: "fbclid_last",          confirmed: true },
+  wbraid_last:      { pipedrive: "wbraid_last",          confirmed: true },
+  gbraid_last:      { pipedrive: "gbraid_last",          confirmed: true },
+  oab:              { pipedrive: "oab_numero",           confirmed: true },
+  oab_uf:           { pipedrive: "oab_uf",               confirmed: true },
+  processo:         { pipedrive: "numero_processo",      confirmed: true }
 };
 
 (function () {
@@ -131,48 +137,77 @@ var PIPEDRIVE_FIELD_MAP = {
   }
   function push(obj) { window.dataLayer.push(obj); }
 
-  /* ---------- Atribuição: URL -> cookies first-party -> campos ocultos ---------- */
+  /* ---------- Atribuição: URL (+ cookies já existentes, só leitura) -> campos ocultos ----------
+     Antes do consentimento nada é gravado: os valores ficam em memória e preenchem os campos ocultos
+     na mesma visita. A gravação acontece em persistAttribution(), chamada só depois do consentimento
+     (ou no carregamento, se CONFIG.cookiesRequireConsent=false). Ler cookies que já existem (de uma visita
+     com consentimento) é permitido. */
   var UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
-  var CLICK_COOKIE_KEYS = ["gclid", "fbclid"];          // também em cookie first-party
-  var CLICK_SESSION_KEYS = ["wbraid", "gbraid"];
+  var CLICK_KEYS = ["gclid", "fbclid", "wbraid", "gbraid"];
+  var ATTR_COOKIE = "dc_attr";                       // UTMs (primeiro valor), JSON
   var params = new URLSearchParams(location.search);
+  var consentGiven = false;
+  var writtenThisView = [];                          // nomes de cookies gravados nesta visita (para retirada de consentimento)
 
-  // UTMs + wbraid/gbraid ficam num cookie first-party único (mesma validade dos click ids); gclid/fbclid em cookies próprios.
-  var ATTR_COOKIE = "dc_attr";
+  function cookieName(k) { return (CONFIG.cookieNames && CONFIG.cookieNames[k]) || k; }
   function loadStoredAttr() {
     try { return JSON.parse(getCookie(ATTR_COOKIE) || "{}") || {}; } catch (e) { return {}; }
   }
   function currentPolicy() {
-    // Links de QA (?qa=1) sempre sobrescrevem, para o time poder testar o link Google e depois o link Meta no mesmo navegador.
+    // Links de QA (?qa=1) sempre sobrescrevem a origem, para testar o link Google e depois o link Meta no mesmo navegador.
     return isTest() ? "last" : CONFIG.clickIdPolicy;
   }
 
-  function captureAttribution() {
+  // Calcula os valores (somente leitura; não escreve nada).
+  function computeAttribution() {
     var stored = loadStoredAttr();
-    var out = {};
-    var changed = false;
     var policy = currentPolicy();
-    UTM_KEYS.concat(CLICK_SESSION_KEYS).forEach(function (k) {
+    var out = {};
+    UTM_KEYS.forEach(function (k) {
       var fromUrl = (params.get(k) || "").trim();
-      var v = stored[k] || "";
-      if (fromUrl && (!v || policy === "last")) { v = fromUrl; }
-      if (v !== (stored[k] || "")) { stored[k] = v; changed = true; }
-      out[k] = v;
+      out[k] = (fromUrl && (!stored[k] || policy === "last")) ? fromUrl : (stored[k] || "");
     });
-    if (changed) setCookie(ATTR_COOKIE, JSON.stringify(stored), CONFIG.clickIdCookieDays);
-    CLICK_COOKIE_KEYS.forEach(function (k) {
-      var name = CONFIG.cookieNames[k] || k;
+    CLICK_KEYS.forEach(function (k) {
       var fromUrl = (params.get(k) || "").trim();
-      var fromCookie = getCookie(name);
-      var v = fromCookie;
-      if (fromUrl && (!fromCookie || policy === "last")) {
-        v = fromUrl;
-        setCookie(name, v, CONFIG.clickIdCookieDays);   // nunca grava vazio, nunca apaga
-      }
-      out[k] = v || "";
+      var firstCookie = getCookie(cookieName(k));
+      var lastCookie = getCookie(cookieName(k) + "_last");
+      out[k] = (fromUrl && (!firstCookie || policy === "last")) ? fromUrl : (firstCookie || "");
+      out[k + "_last"] = fromUrl || lastCookie || "";   // último clique: o desta visita, senão o último gravado
     });
     return out;
   }
+
+  function writeCookie(name, value) {
+    setCookie(name, value, CONFIG.clickIdCookieDays);
+    if (writtenThisView.indexOf(name) === -1) writtenThisView.push(name);
+  }
+
+  // Grava os cookies first-party. Só chamar com consentimento (ou com cookiesRequireConsent=false).
+  function persistAttribution() {
+    var a = computeAttribution();
+    var stored = loadStoredAttr(), changed = false;
+    UTM_KEYS.forEach(function (k) {
+      if (a[k] && a[k] !== stored[k]) { stored[k] = a[k]; changed = true; }
+    });
+    if (changed) writeCookie(ATTR_COOKIE, JSON.stringify(stored));
+    CLICK_KEYS.forEach(function (k) {
+      var n = cookieName(k);
+      if (a[k] && a[k] !== getCookie(n)) writeCookie(n, a[k]);                              // origem (primeiro clique): nunca grava vazio
+      if (a[k + "_last"] && a[k + "_last"] !== getCookie(n + "_last")) writeCookie(n + "_last", a[k + "_last"]); // último clique
+    });
+  }
+  function grantConsent() {
+    consentGiven = true;
+    persistAttribution();
+  }
+  function revokeConsent() {
+    consentGiven = false;
+    writtenThisView.forEach(function (n) {
+      document.cookie = n + "=; max-age=0; path=/" + (CONFIG.cookieDomain ? "; domain=" + CONFIG.cookieDomain : "");
+    });
+    writtenThisView = [];
+  }
+  function mayWriteCookies() { return !CONFIG.cookiesRequireConsent || consentGiven; }
 
   function readGaClientId() {
     var ga = getCookie("_ga");                       // GA1.1.1234567890.1700000000
@@ -187,14 +222,15 @@ var PIPEDRIVE_FIELD_MAP = {
     return fbclid ? "fb." + 1 + "." + Date.now() + "." + fbclid : "";
   }
 
-  var attribution = captureAttribution();
+  var attribution = computeAttribution();
 
   function setHidden(id, v) { var el = document.getElementById(id); if (el) el.value = v || ""; }
   function fillHiddenFields() {
-    attribution = captureAttribution();
+    attribution = computeAttribution();
+    if (mayWriteCookies()) persistAttribution();
     Object.keys(attribution).forEach(function (k) { setHidden(k, attribution[k]); });
     setHidden("_fbp", readFbp());
-    setHidden("_fbc", readFbc(attribution.fbclid));
+    setHidden("_fbc", readFbc(attribution.fbclid_last || attribution.fbclid));
     setHidden("ga_client_id", readGaClientId());
     setHidden("consent_version", CONFIG.consentVersion);
     setHidden("landing_url", location.href);
@@ -389,6 +425,7 @@ var PIPEDRIVE_FIELD_MAP = {
       utm_source: val("utm_source"), utm_medium: val("utm_medium"), utm_campaign: val("utm_campaign"),
       utm_term: val("utm_term"), utm_content: val("utm_content"),
       gclid: val("gclid"), fbclid: val("fbclid"), wbraid: val("wbraid"), gbraid: val("gbraid"),
+      gclid_last: val("gclid_last"), fbclid_last: val("fbclid_last"), wbraid_last: val("wbraid_last"), gbraid_last: val("gbraid_last"),
       _fbp: val("_fbp"), _fbc: val("_fbc"), ga_client_id: val("ga_client_id"),
       consent_version: val("consent_version"),
       landing_url: val("landing_url"), referrer: val("referrer"),
@@ -531,6 +568,13 @@ var PIPEDRIVE_FIELD_MAP = {
     var btnVoltar = document.getElementById("btn-voltar");
     if (btnVoltar) btnVoltar.addEventListener("click", function () { setStep("1"); });
 
+    // Trigger alternativo de consentimento: marcar a caixa (desmarcar remove os cookies gravados nesta visita).
+    var consentBox = document.getElementById("consentimento");
+    if (consentBox) consentBox.addEventListener("change", function () {
+      if (!CONFIG.cookiesRequireConsent || CONFIG.cookieConsentTrigger !== "checkbox") return;
+      if (consentBox.checked) grantConsent(); else revokeConsent();
+    });
+
     var form = document.getElementById("form-qualificacao");
     var errBox = document.getElementById("submit-error");
     if (form) form.addEventListener("submit", function (e) {
@@ -541,19 +585,22 @@ var PIPEDRIVE_FIELD_MAP = {
       if (!validateStep2()) { focusFirstInvalid(document.getElementById("step-2")); return; }
 
       var btn = document.getElementById("btn-enviar");
+      // Consentimento dado (caixa marcada e passo 2 válido): só agora os cookies podem ser gravados (trigger "submit").
+      if (CONFIG.cookiesRequireConsent && CONFIG.cookieConsentTrigger === "submit") grantConsent();
       var payload = buildPayload();
       submitting = true;
       if (btn) { btn.disabled = true; btn.setAttribute("aria-busy", "true"); }
 
       sendLead(payload).then(function () {
         // Sucesso (HTTP ok com Pipedrive ligado; fluxo local com Pipedrive desligado).
-        // Evento EXATAMENTE como em conversoes-gtm.md §4.1 — no callback de sucesso, nunca no clique.
+        // Evento do conversoes-gtm.md §4.1 (+ event_id, decisão de 12/11) — no callback de sucesso, nunca no clique.
         push({
           event: "form_submit",
           form_id: CONFIG.formId,
           form_status: "success",
           is_test: payload.is_test,
-          lead_source: CONFIG.leadSource
+          lead_source: CONFIG.leadSource,
+          event_id: payload.event_id           // mesmo event_id do payload (dedup Pixel/CAPI)
         });
         if (digits(payload.processo).length) push({ event: "process_number_filled" });
         setStep("thanks");
@@ -570,7 +617,7 @@ var PIPEDRIVE_FIELD_MAP = {
   window.DigCapLP = {
     CONFIG: CONFIG, PIPEDRIVE_FIELD_MAP: PIPEDRIVE_FIELD_MAP, HEADLINES: HEADLINES,
     setHeadline: setHeadline, setOab: setOab, setWhatsapp: setWhatsapp, setStep: setStep,
-    lastPayload: null, lastEnvelope: null
+    lastPayload: null, lastEnvelope: null, hasConsent: function () { return consentGiven; }
   };
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
