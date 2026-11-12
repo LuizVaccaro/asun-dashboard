@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-headline="A" data-form-step="1" data-whatsapp="off" data-oab="optional" data-internal="on">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Antecipação de honorários para advogados | DigCap</title>
+  <meta name="description" content="A DigCap antecipa honorários de advogados com processo elegível contra entes públicos. Responda à qualificação e conheça a proposta.">
+  <!-- STAGING: não indexar. Na publicação (com ok do Luiz), remover esta linha. -->
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/logo-placeholder.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/main.css">
+
+  <!-- ===== GTM — PLACEHOLDER (ID NÃO FORNECIDO) =====
+       O ID do contêiner GTM da DigCap ainda é "a confirmar" (conversoes-gtm.md, §4 e §8).
+       Não invente um ID. Quando chegar: preencher CONFIG.gtmId em js/main.js (formato GTM-XXXXXXX).
+       O main.js injeta o snippet padrão do GTM; não cole outro snippet aqui para não duplicar.
+       Equivalente <noscript> (colar logo após <body> quando houver ID):
+       <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  ===== -->
+  <script src="js/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+
+  <div class="internal-banner" role="note">
+    <div class="wrap">
+      <div><strong>Staging — uso interno, não enviar ao cliente.</strong> Não publicado · noindex · direção visual provisória (kit de marca não fornecido). Padrões vêm do CONFIG em js/main.js.</div>
+      <div class="controls">
+        <span>Headline</span>
+        <button type="button" data-set-headline="A" aria-pressed="true">A</button>
+        <button type="button" data-set-headline="B" aria-pressed="false">B</button>
+        <button type="button" data-set-headline="C" aria-pressed="false">C</button>
+        <span>WhatsApp</span>
+        <button type="button" data-set-whatsapp="off" aria-pressed="true">Off</button>
+        <button type="button" data-set-whatsapp="on" aria-pressed="false">On</button>
+        <span>OAB</span>
+        <button type="button" data-set-oab="optional" aria-pressed="true">Opcional</button>
+        <button type="button" data-set-oab="required" aria-pressed="false">Obrigatória</button>
+      </div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container bar">
+      <div class="logo-meta">
+        <a class="logo" href="#conteudo" aria-label="DigCap (placeholder de logo)">
+          <span>dig</span><span class="cap">cap</span>
+        </a>
+        <span class="logo-caption">Logo [a confirmar]</span>
+      </div>
+      <div class="header-cta">
+        <a class="btn btn-primary" href="#qualificacao">Conhecer a proposta</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container">
+        <div class="hero-inner">
+          <span class="hero-rule" aria-hidden="true"></span>
+          <p class="support">Para advogados que atuam contra municípios, estados, União e INSS.</p>
+          <h1 id="hero-title">Antecipação de honorários para advogados</h1>
+          <p class="sub">A DigCap antecipa honorários contratuais ou sucumbenciais de advogados com processo elegível contra entes públicos. Responda a poucas perguntas de qualificação e conheça a proposta.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="#qualificacao">Conhecer a proposta</a>
+          </div>
+          <div class="wa-static slot" id="slot-whatsapp">
+            <span class="slot-label">WhatsApp — só se aprovado</span>
+            <div class="wa-static-row">
+              <span class="wa-static-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18.5V7.5A2.5 2.5 0 0 1 7.5 5h9A2.5 2.5 0 0 1 19 7.5v7A2.5 2.5 0 0 1 16.5 17H8l-3 2.5z"/></svg>
+              </span>
+              <p>WhatsApp desligado (CONFIG.whatsapp.enabled = false). Se o Luiz aprovar, ligue a flag e informe o número oficial em CONFIG.whatsapp.number; o botão flutua no canto inferior direito, sem usar a marca oficial do WhatsApp. O CTA único continua sendo o formulário.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="para-quem-e" aria-labelledby="para-quem-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-rule" aria-hidden="true"></span>
+          <h2 id="para-quem-title">Esta página é para o advogado</h2>
+        </div>
+        <p class="lede">A DigCap atende o advogado que quer antecipar os próprios honorários, contratuais ou sucumbenciais, em processos contra entes públicos. É o caso de quem tem carteira recorrente de RPVs e precatórios.</p>
+        <div class="note-muted">
+          <p>Você é o titular do crédito ou investidor? Esta página não é o caminho para você.</p>
+          <div class="slot" style="margin-top:12px">
+            <span class="slot-label">A confirmar</span>
+            <div>Destino da jornada do titular, se existir; se não existir, manter só a frase.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-paper" id="como-funciona" aria-labelledby="como-funciona-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-rule" aria-hidden="true"></span>
+          <h2 id="como-funciona-title">Como funciona</h2>
+        </div>
+        <ol class="steps">
+          <li class="step">
+            <span class="step-num" aria-hidden="true">1</span>
+            <div>
+              <h3>Qualificação</h3>
+              <p>Você informa se é advogado, o tipo de crédito (RPV ou precatório), a fase do processo e se tem outros casos na carteira.</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-num" aria-hidden="true">2</span>
+            <div>
+              <h3>Cessão do crédito de honorários</h3>
+              <p>A antecipação é feita por cessão do crédito de honorários.</p>
+              <div class="slot">
+                <span class="slot-label">A confirmar</span>
+                <div>Texto jurídico da DigCap sobre a cessão e sobre quem é o cessionário. Não descrever a mecânica sem aprovação.</div>
+              </div>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-num" aria-hidden="true">3</span>
+            <div>
+              <h3>Dados do processo</h3>
+              <p>Depois da qualificação, pedimos os dados do processo. O número do processo é opcional no primeiro contato.</p>
+              <div class="slot">
+                <span class="slot-label">A confirmar</span>
+                <div>Se o número pode ser enviado depois e por qual canal.</div>
+              </div>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-num" aria-hidden="true">4</span>
+            <div>
+              <h3>Retorno da DigCap</h3>
+              <p>A DigCap entra em contato com você para apresentar a proposta.</p>
+              <div class="slot">
+                <span class="slot-label">A confirmar</span>
+                <div>Quem entra em contato e por qual canal. Não prometer prazo de retorno.</div>
+              </div>
+            </div>
+          </li>
+        </ol>
+
+        <div class="taxas-block" id="taxas-e-custos">
+          <span class="slot-label">Bloco visível, sem clique</span>
+          <h2>Taxas e custos</h2>
+          <div class="slot">
+            <span class="slot-label">A confirmar</span>
+            <div>Texto sobre taxas. A DigCap informa se há taxa, deságio ou comissão e o que pode ser dito na página. Se houver qualquer custo para o advogado, ele aparece aqui, completo. “Sem custo para o advogado” só entra com confirmação escrita da DigCap.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="beneficios" aria-labelledby="beneficios-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-rule" aria-hidden="true"></span>
+          <h2 id="beneficios-title">O que muda para o seu escritório</h2>
+        </div>
+        <ol class="benefits">
+          <li class="benefit">
+            <div class="benefit-idx">01</div>
+            <h3>Antecipe os seus honorários</h3>
+            <p>Honorários contratuais ou sucumbenciais de processos com ente público, antecipados com a DigCap.</p>
+          </li>
+          <li class="benefit">
+            <div class="benefit-idx">02</div>
+            <h3>Uma oferta feita para o advogado</h3>
+            <p>Você não é tratado como titular do crédito. A página, a conversa e a proposta partem do seu papel no processo.</p>
+          </li>
+          <li class="benefit">
+            <div class="benefit-idx">03</div>
+            <h3>Qualificação antes dos dados do processo</h3>
+            <p>Primeiro entendemos seu perfil, o tipo de crédito, a fase e a recorrência. Só depois pedimos o que for do processo.</p>
+          </li>
+          <li class="benefit">
+            <div class="benefit-idx">04</div>
+            <h3>Pensado para carteira recorrente</h3>
+            <p>Quem tem RPVs recorrentes contra entes públicos encontra aqui um canal próprio, e não um formulário genérico de cessão.</p>
+          </li>
+        </ol>
+        <div class="types-row">
+          <span class="type-chip">RPV</span>
+          <span class="type-chip">Precatório</span>
+          <div class="slot" style="flex:1; min-width:min(100%,240px)">
+            <span class="slot-label">A confirmar</span>
+            <div>A DigCap alinha se crédito cível e trabalhista entram. Até lá, a LP não os cita.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section proof" id="prova-social" aria-labelledby="prova-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-rule" aria-hidden="true"></span>
+          <div class="proof-banner">
+            <h2 id="prova-title">A DigCap em números</h2>
+            <span class="design-note">Bloco reservado — a confirmar</span>
+          </div>
+          <p class="lede" style="color:var(--ink-muted)">Nenhum número, depoimento, case ou logo está autorizado para publicação. Se não houver autorização escrita até a terça 17/11 (QA), a página sobe sem este bloco e sem cifras.</p>
+        </div>
+        <div class="metrics">
+          <div class="slot metric-slot">
+            <span class="slot-label">Slot 1 — não publicar</span>
+            <div class="ghost">[a confirmar]</div>
+            <div>R$ 50 mi+ intermediados — autorização escrita, definição e data de corte</div>
+          </div>
+          <div class="slot metric-slot">
+            <span class="slot-label">Slot 2 — não publicar</span>
+            <div class="ghost">[a confirmar]</div>
+            <div>4.500+ cessões de crédito — autorização escrita e período</div>
+          </div>
+          <div class="slot metric-slot">
+            <span class="slot-label">Slot 3 — não publicar</span>
+            <div class="ghost">[a confirmar]</div>
+            <div>300+ escritórios parceiros — autorização escrita</div>
+          </div>
+        </div>
+        <div class="proof-extra">
+          <div class="slot">
+            <span class="slot-label">Depoimento — a confirmar</span>
+            <div>[depoimento a confirmar] — nome, escritório e foto a confirmar. Autorização escrita do parceiro e da DigCap; depoimentos de advogados têm regras próprias da OAB.</div>
+          </div>
+          <div class="slot">
+            <span class="slot-label">Case — a confirmar</span>
+            <div>[case de parceiro a confirmar] — autorização específica.</div>
+          </div>
+          <div class="slot">
+            <span class="slot-label">Logos — a confirmar</span>
+            <div>[logos de parceiros a confirmar] — autorização específica.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="objecoes" aria-labelledby="objecoes-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-rule" aria-hidden="true"></span>
+          <h2 id="objecoes-title">Perguntas que o advogado costuma ter</h2>
+        </div>
+        <ul class="objections">
+          <li class="objection">
+            <h3>“Isso é para o autor do crédito, não para mim.”</h3>
+            <p>Não. Esta página é para o advogado que quer antecipar os próprios honorários.</p>
+          </li>
+          <li class="objection">
+            <h3>“Vão pedir o processo inteiro antes de eu entender a oferta.”</h3>
+            <p>Primeiro você entende a oferta e responde à qualificação. Só depois pedimos dados do processo, e o número é opcional no primeiro contato.</p>
+          </li>
+          <li class="objection">
+            <h3>“Isso é software de acompanhamento.”</h3>
+            <p>A DigCap não é sistema de acompanhamento nem de consulta de processos. É antecipação de honorários para advogados.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section form-section" id="qualificacao" aria-labelledby="form-title">
+      <div class="container">
+        <div class="form-card">
+          <div class="section-head" style="margin-bottom:16px">
+            <span class="section-rule" aria-hidden="true"></span>
+            <h2 id="form-title">Conheça a proposta</h2>
+            <p>Quatro perguntas de qualificação e seus dados de contato. Os dados do processo só vêm depois.</p>
+          </div>
+
+          <div class="form-progress" aria-live="polite">
+            <span id="progress-label">Passo 1 de 2</span>
+            <div class="progress-track" aria-hidden="true"><div class="progress-bar"></div></div>
+          </div>
+
+          <form id="form-qualificacao" novalidate action="#" method="post">
+            <div class="hidden-fields" aria-hidden="true">
+              <input type="hidden" name="utm_source" id="utm_source">
+              <input type="hidden" name="utm_medium" id="utm_medium">
+              <input type="hidden" name="utm_campaign" id="utm_campaign">
+              <input type="hidden" name="utm_term" id="utm_term">
+              <input type="hidden" name="utm_content" id="utm_content">
+              <input type="hidden" name="gclid" id="gclid">
+              <input type="hidden" name="wbraid" id="wbraid">
+              <input type="hidden" name="gbraid" id="gbraid">
+              <input type="hidden" name="fbclid" id="fbclid">
+              <input type="hidden" name="_fbp" id="_fbp">
+              <input type="hidden" name="_fbc" id="_fbc">
+              <input type="hidden" name="ga_client_id" id="ga_client_id">
+              <input type="hidden" name="consent_version" id="consent_version">
+              <input type="hidden" name="landing_url" id="landing_url">
+              <input type="hidden" name="referrer" id="referrer">
+              <input type="hidden" name="form_id" id="form_id" value="lp_advogados">
+              <input type="hidden" name="submitted_at" id="submitted_at">
+            </div>
+
+            <div class="form-step" id="step-1">
+              <fieldset class="field" id="field-advogado">
+                <legend class="legend">Você é advogado(a)? <span class="req" aria-hidden="true">*</span></legend>
+                <div class="choices" role="radiogroup" aria-required="true">
+                  <label class="choice"><input type="radio" name="e_advogado" value="sim" required> <span>Sim</span></label>
+                  <label class="choice"><input type="radio" name="e_advogado" value="nao" required> <span>Não</span></label>
+                </div>
+                <p class="field-error" id="err-advogado">Selecione uma opção.</p>
+              </fieldset>
+
+              <fieldset class="field" id="field-tipo">
+                <legend class="legend">Tipo de crédito <span class="req" aria-hidden="true">*</span></legend>
+                <div class="choices">
+                  <label class="choice"><input type="checkbox" name="tipo_credito" value="rpv"> <span>RPV</span></label>
+                  <label class="choice"><input type="checkbox" name="tipo_credito" value="precatorio"> <span>Precatório</span></label>
+                </div>
+                <p class="field-error">Selecione ao menos um tipo de crédito.</p>
+              </fieldset>
+
+              <div class="field" id="field-fase">
+                <label class="field-label" for="fase">Fase do processo <span class="req" aria-hidden="true">*</span></label>
+                <select class="control" id="fase" name="fase" required>
+                  <option value="">Selecione</option>
+                  <option value="em_andamento">Em andamento, antes da expedição</option>
+                  <option value="expedido">RPV ou precatório expedido, aguardando pagamento</option>
+                  <option value="nao_sei">Não sei informar</option>
+                </select>
+                <p class="field-error">Selecione a fase do processo.</p>
+                <div class="slot" style="margin-top:10px">
+                  <span class="slot-label">A confirmar</span>
+                  <div>Opções definitivas com o comercial/Pipedrive.</div>
+                </div>
+              </div>
+
+              <fieldset class="field" id="field-recorrencia">
+                <legend class="legend">Você tem recorrência na carteira? <span class="req" aria-hidden="true">*</span></legend>
+                <div class="choices" role="radiogroup" aria-required="true">
+                  <label class="choice"><input type="radio" name="recorrencia" value="isolado" required> <span>Caso isolado</span></label>
+                  <label class="choice"><input type="radio" name="recorrencia" value="alguns" required> <span>Alguns casos</span></label>
+                  <label class="choice"><input type="radio" name="recorrencia" value="recorrente" required> <span>Carteira recorrente de RPVs</span></label>
+                </div>
+                <p class="field-error">Selecione uma opção.</p>
+                <div class="slot" style="margin-top:10px">
+                  <span class="slot-label">A confirmar</span>
+                  <div>Como o comercial define “recorrente”.</div>
+                </div>
+              </fieldset>
+
+              <div class="form-actions">
+                <button type="button" class="btn btn-primary btn-block" id="btn-continuar">Continuar</button>
+              </div>
+            </div>
+
+            <div class="form-step" id="step-2">
+              <div class="field" id="field-nome">
+                <label class="field-label" for="nome">Nome completo <span class="req" aria-hidden="true">*</span></label>
+                <input class="control" type="text" id="nome" name="nome" autocomplete="name" required>
+                <p class="field-error">Informe seu nome completo.</p>
+              </div>
+
+              <div class="field" id="field-email">
+                <label class="field-label" for="email">E-mail profissional <span class="req" aria-hidden="true">*</span></label>
+                <input class="control" type="email" id="email" name="email" autocomplete="email" inputmode="email" required>
+                <p class="field-error">Informe um e-mail válido.</p>
+              </div>
+
+              <div class="field" id="field-telefone">
+                <label class="field-label" for="telefone">Telefone com DDD <span class="req" aria-hidden="true">*</span></label>
+                <input class="control" type="tel" id="telefone" name="telefone" autocomplete="tel" inputmode="tel" placeholder="(00) 00000-0000" maxlength="16" required>
+                <span class="hint">pode ser WhatsApp</span>
+                <p class="field-error">Informe um telefone com DDD.</p>
+              </div>
+
+              <div class="field" id="field-oab">
+                <label class="field-label" for="oab">
+                  Número da OAB e UF
+                  <span class="opt" id="oab-optional-label">(opcional)</span>
+                  <span class="req" id="oab-required-mark" aria-hidden="true">*</span>
+                </label>
+                <div class="oab-row">
+                  <input class="control" type="text" id="oab" name="oab" inputmode="numeric" placeholder="123456" autocomplete="off">
+                  <label class="visually-hidden" for="oab_uf">UF da OAB</label>
+                  <select class="control" id="oab_uf" name="oab_uf">
+                    <option value="">UF</option>
+                    <option value="AC">AC</option>
+                <option value="AL">AL</option>
+                <option value="AM">AM</option>
+                <option value="AP">AP</option>
+                <option value="BA">BA</option>
+                <option value="CE">CE</option>
+                <option value="DF">DF</option>
+                <option value="ES">ES</option>
+                <option value="GO">GO</option>
+                <option value="MA">MA</option>
+                <option value="MG">MG</option>
+                <option value="MS">MS</option>
+                <option value="MT">MT</option>
+                <option value="PA">PA</option>
+                <option value="PB">PB</option>
+                <option value="PE">PE</option>
+                <option value="PI">PI</option>
+                <option value="PR">PR</option>
+                <option value="RJ">RJ</option>
+                <option value="RN">RN</option>
+                <option value="RO">RO</option>
+                <option value="RR">RR</option>
+                <option value="RS">RS</option>
+                <option value="SC">SC</option>
+                <option value="SE">SE</option>
+                <option value="SP">SP</option>
+                <option value="TO">TO</option>
+                  </select>
+                </div>
+                <p class="field-error" id="err-oab">Informe o número da OAB e a UF.</p>
+                <div class="slot" id="oab-swap-hint" style="margin-top:10px">
+                  <span class="slot-label">Troca (interno)</span>
+                  <div>OAB opcional por padrão. Para tornar obrigatória: CONFIG.oab = &quot;required&quot; em js/main.js (ou ?oab=required no staging). Decisão do Luiz. Nada mais muda no formulário.</div>
+                </div>
+              </div>
+
+              <div class="field" id="field-processo">
+                <label class="field-label" for="processo">Número do processo (CNJ) <span class="opt">(opcional)</span></label>
+                <input class="control" type="text" id="processo" name="processo" inputmode="numeric" placeholder="0000000-00.0000.0.00.0000" maxlength="25" autocomplete="off">
+                <span class="hint">Se preferir, envie depois.</span>
+                <p class="field-error">Informe o número completo (20 dígitos) ou deixe em branco.</p>
+              </div>
+
+              <div class="field" id="field-consentimento">
+                <label class="choice consent">
+                  <input type="checkbox" id="consentimento" name="consentimento" value="sim" required>
+                  <span>Li e concordo que a DigCap trate meus dados para entrar em contato sobre esta proposta e os registre em seu sistema de atendimento. Veja o <a href="#aviso-privacidade">Aviso de Privacidade</a>.</span>
+                </label>
+                <div class="slot" style="margin-top:10px">
+                  <span class="slot-label">A confirmar — complemento do consentimento</span>
+                  <div>Se a DigCap autoriza acrescentar “e que compartilhe informações de contato com plataformas de anúncio, como Google e Meta, para medir e melhorar seus anúncios”.</div>
+                </div>
+                <p class="field-error">É necessário concordar para enviar.</p>
+                <div class="slot" style="margin-top:10px">
+                  <span class="slot-label">A confirmar</span>
+                  <div>Texto jurídico aprovado pela DigCap, link do aviso e nome/contato do encarregado. Sem texto aprovado, não ativar conversões avançadas nem enviar e-mail ou telefone às plataformas.</div>
+                </div>
+              </div>
+
+              <p class="submit-error" id="submit-error" role="alert">Não foi possível enviar agora. Tente novamente em instantes.</p>
+
+              <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="btn-voltar">Voltar</button>
+                <button type="submit" class="btn btn-primary" id="btn-enviar" style="flex:1">Enviar e conhecer a proposta</button>
+              </div>
+            </div>
+
+            <div class="form-step" id="step-blocked" tabindex="-1">
+              <div class="blocked-msg" id="screen-nao-advogado">
+                <h3>Esta oferta é para advogados</h3>
+                <p>Esta oferta é para advogados. Se você é o titular do crédito, <span class="design-note" style="display:inline">a confirmar: link da jornada do titular, se existir</span>.</p>
+                <button type="button" class="btn btn-secondary" id="btn-alterar-resposta">Alterar resposta</button>
+              </div>
+            </div>
+
+            <div class="form-step" id="step-thanks" tabindex="-1">
+              <div class="thanks-msg">
+                <h3>Recebemos suas informações</h3>
+                <p>A DigCap entrará em contato para apresentar a proposta.</p>
+                <div class="slot" style="margin-top:12px">
+                  <span class="slot-label">A confirmar</span>
+                  <div>Canal e responsável. Não prometer prazo de retorno.</div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-rule" aria-hidden="true"></span>
+          <h2 id="faq-title">Dúvidas frequentes</h2>
+        </div>
+        <ul class="faq-list">
+          <li class="faq-item is-open">
+            <button type="button" class="faq-q" aria-expanded="true">
+              <span>Para quem é esta página?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a">
+              <p>Para advogados que atuam contra entes públicos e querem antecipar os próprios honorários.</p>
+            </div>
+          </li>
+          <li class="faq-item">
+            <button type="button" class="faq-q" aria-expanded="false">
+              <span>O que a DigCap antecipa e como?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a">
+              <p>Honorários de advogados, contratuais ou sucumbenciais, em processos elegíveis. A antecipação é feita por cessão do crédito de honorários.</p>
+              <div class="slot" style="margin-top:10px">
+                <span class="slot-label">A confirmar</span>
+                <div>Texto jurídico da DigCap e definição de “processo elegível”.</div>
+              </div>
+            </div>
+          </li>
+          <li class="faq-item">
+            <button type="button" class="faq-q" aria-expanded="false">
+              <span>O que é a cessão do crédito de honorários?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a">
+              <p>É o instrumento pelo qual a antecipação é feita: o crédito dos honorários é cedido.</p>
+              <div class="slot" style="margin-top:10px">
+                <span class="slot-label">A confirmar</span>
+                <div>Texto jurídico da DigCap. Não usar a explicação sem aprovação.</div>
+              </div>
+            </div>
+          </li>
+          <li class="faq-item">
+            <button type="button" class="faq-q" aria-expanded="false">
+              <span>Preciso informar o número do processo agora?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a">
+              <p>Não. Primeiro você responde à qualificação. O número do processo é opcional no primeiro contato e pode ser enviado depois.</p>
+            </div>
+          </li>
+          <li class="faq-item">
+            <button type="button" class="faq-q" aria-expanded="false">
+              <span>Quais tipos de crédito entram?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a">
+              <p>RPVs e precatórios contra entes públicos.</p>
+              <div class="slot" style="margin-top:10px">
+                <span class="slot-label">A confirmar</span>
+                <div>A DigCap alinha se crédito cível e trabalhista entram; até lá, não citar.</div>
+              </div>
+            </div>
+          </li>
+          <li class="faq-item">
+            <button type="button" class="faq-q" aria-expanded="false">
+              <span>Sou o titular do crédito. Posso usar esta página?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a">
+              <p>Esta página é para advogados. <span class="design-note" style="display:inline">A confirmar: caminho para o titular, se a DigCap tiver.</span></p>
+            </div>
+          </li>
+          <li class="faq-item">
+            <button type="button" class="faq-q" aria-expanded="false">
+              <span>Quais são as taxas e custos?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a">
+              <div class="slot">
+                <span class="slot-label">A confirmar</span>
+                <div>Texto sobre taxas — o mesmo da seção Taxas e custos. Não responder com “são apresentadas na proposta”.</div>
+              </div>
+            </div>
+          </li>
+          <li class="faq-item">
+            <button type="button" class="faq-q" aria-expanded="false">
+              <span>A DigCap é um sistema de acompanhamento de processos?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a">
+              <p>Não. A DigCap não oferece sistema nem consulta de processos. A oferta é a antecipação de honorários para advogados.</p>
+              <div class="slot" style="margin-top:10px">
+                <span class="slot-label">A confirmar</span>
+                <div>A DigCap confirma que não oferece nenhum acompanhamento a parceiros.</div>
+              </div>
+            </div>
+          </li>
+          <li class="faq-item">
+            <button type="button" class="faq-q" aria-expanded="false">
+              <span>O que acontece com os meus dados?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq-a">
+              <p>Usamos os dados para entrar em contato sobre a proposta, conforme o Aviso de Privacidade.</p>
+              <div class="slot" style="margin-top:10px">
+                <span class="slot-label">A confirmar</span>
+                <div>Finalidade, quem recebe os dados e contato do encarregado, conforme o texto jurídico.</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section-navy cta-final" id="cta-final" aria-labelledby="cta-final-title">
+      <div class="container">
+        <h2 id="cta-final-title">Para advogados com carteira de RPVs contra entes públicos</h2>
+        <p>Responda à qualificação e conheça a proposta da DigCap.</p>
+        <a class="btn btn-light" href="#qualificacao">Conhecer a proposta</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="rodape">
+    <div class="container">
+      <h2>Dados institucionais</h2>
+      <div class="footer-grid">
+        <div class="footer-item">
+          <span class="k">Razão social</span>
+          <div class="footer-slot">[a confirmar]</div>
+        </div>
+        <div class="footer-item">
+          <span class="k">CNPJ</span>
+          <div class="footer-slot">[a confirmar]</div>
+        </div>
+        <div class="footer-item">
+          <span class="k">Endereço completo</span>
+          <div class="footer-slot">[a confirmar]</div>
+        </div>
+        <div class="footer-item">
+          <span class="k">Contato (e-mail e telefone)</span>
+          <div class="footer-slot">[a confirmar]</div>
+        </div>
+        <div class="footer-item" id="aviso-privacidade">
+          <span class="k">Política de Privacidade</span>
+          <div class="footer-slot">[a confirmar: texto e link]</div>
+        </div>
+        <div class="footer-item">
+          <span class="k">Encarregado de dados (nome e contato)</span>
+          <div class="footer-slot">[a confirmar]</div>
+        </div>
+      </div>
+      <div class="footer-item" style="margin-top:16px">
+        <span class="k">Descrição institucional do negócio</span>
+        <div class="footer-slot">[a confirmar: a DigCap define o texto; ele precisa ser o mesmo na LP, no cadastro do Google e no formulário de verificação]</div>
+      </div>
+      <nav class="footer-links" aria-label="Links do rodapé">
+        <a href="https://digcap.com.br">digcap.com.br</a>
+        <a href="#aviso-privacidade">Política de Privacidade</a>
+      </nav>
+      <p class="footer-note">Links permitidos nesta versão: apenas a home e a política de privacidade. Sem link para páginas antigas do site.</p>
+    </div>
+  </footer>
+
+  <a class="wa-slot" id="wa-fab" aria-label="WhatsApp" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M5 18.5V7.5A2.5 2.5 0 0 1 7.5 5h9A2.5 2.5 0 0 1 19 7.5v7A2.5 2.5 0 0 1 16.5 17H8l-3 2.5z"/>
+    </svg>
+    <span>WhatsApp</span>
+  </a>
+</body>
+</html>
